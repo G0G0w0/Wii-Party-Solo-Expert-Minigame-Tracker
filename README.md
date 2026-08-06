@@ -1,6 +1,5 @@
 # Wii-Party-Solo-Expert-Minigame-Tracker
 A mini-game live tracker for the solo expert mode of Wii Party.
-
 https://g0g0w0.github.io/Wii-Party-Solo-Expert-Minigame-Tracker/
 
 Input your best times for each mini-game and see your run's sum of best updated live with a more intuitive click on the mini-games aspect.
