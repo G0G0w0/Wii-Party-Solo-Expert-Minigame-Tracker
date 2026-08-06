@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wii Party – MiniGame Tracker Solo Expert</title>
+  <style>
+    :root {
+      --bg: #0f0f1a;
+      --card: #16213e;
+      --accent: #4ade80;
+      --blue: #3b82f6;
+      --orange: #f97316;
+      --green: #22c55e;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --row1: #16213e;
+      --row2: #1c2a4a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 16px;
+      line-height: 1.4;
+    }
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    h1 { margin: 0; font-size: 1.5rem; }
+    .lang-switch { position: relative; flex-shrink: 0; }
+    .lang-btn {
+      background: var(--card);
+      border: 1px solid #334155;
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.95rem;
+    }
+    .lang-btn:hover { background: #1e293b; }
+    .lang-menu {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: calc(100% + 4px);
+      background: var(--card);
+      border: 1px solid #334155;
+      border-radius: 8px;
+      min-width: 160px;
+      z-index: 100;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      overflow: hidden;
+    }
+    .lang-menu.open { display: block; }
+    .lang-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      width: 100%;
+      text-align: left;
+      font-size: 0.95rem;
+    }
+    .lang-option:hover { background: #1e293b; }
+    .lang-option.active { background: #1e293b; color: var(--accent); }
+    .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+    .tab-btn {
+      background: var(--card);
+      border: 2px solid transparent;
+      color: var(--text);
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .tab-btn.active { border-color: var(--accent); background: #1e293b; }
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* Tracker */
+    .next-type {
+      background: var(--card);
+      padding: 12px 16px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .type-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: #fff;
+    }
+    .type-badge.t4v4 { background: var(--blue); }
+    .type-badge.t1v1 { background: var(--orange); }
+    .type-badge.t1v3 { background: var(--green); }
+
+    #btn-retour {
+      background: #7f1d1d;
+      border: 1px solid #ef4444;
+      color: #fecaca;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-left: 4px;
+    }
+    #btn-retour:hover:not(:disabled) { background: #991b1b; }
+    #btn-retour:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .filter-bar {
+      margin-bottom: 12px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .filter-bar input[type="search"],
+    .filter-bar select {
+      background: #0f172a;
+      border: 1px solid #334155;
+      color: var(--text);
+      padding: 6px 10px;
+      border-radius: 8px;
+    }
+    .filter-bar button.active { border-color: var(--accent); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .game {
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.15s, opacity 0.15s;
+      background: var(--card);
+      border-radius: 10px;
+      padding: 8px;
+      border: 2px solid transparent;
+    }
+    .game:hover { transform: scale(1.03); border-color: #64748b; }
+    .game img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      border-radius: 6px;
+      background: #1e293b;
+    }
+    .game span {
+      display: block;
+      margin-top: 6px;
+      font-size: 0.78rem;
+      word-break: break-word;
+    }
+
+    /* Couleurs selon vitesse (désaturées, moins agressives) */
+    .game.speed-tres-lent   { background: #4a2c2c; border-color: #b85c5c; }
+    .game.speed-lent        { background: #4a3a2c; border-color: #c48a5a; }
+    .game.speed-moyen       { background: #4a452c; border-color: #c4b85a; }
+    .game.speed-rapide      { background: #2c4a35; border-color: #6aab7a; }
+    .game.speed-tres-rapide { background: #1e5c40; border-color: #4ade80; }
+
+    /* Couleurs des temps dans la liste selon vitesse */
+    .time-speed-tres-lent   { color: #e88a8a !important; }
+    .time-speed-lent        { color: #e8b48a !important; }
+    .time-speed-moyen       { color: #e8d88a !important; }
+    .time-speed-rapide      { color: #8ae8a8 !important; }
+    .time-speed-tres-rapide { color: #5cf0a0 !important; }
+
+    /* Layout ordre + proba */
+    .bottom-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+    #order-section {
+      background: var(--card);
+      padding: 16px;
+      border-radius: 12px;
+      flex: 1 1 340px;
+      min-width: 280px;
+    }
+    #order-section h2 { margin: 0 0 8px; font-size: 1.15rem; }
+    .cumul {
+      font-size: 1.5rem;
+      font-variant-numeric: tabular-nums;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .order-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      max-height: 420px;
+      overflow-y: auto;
+    }
+    .order-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 8px;
+      font-size: 0.9rem;
+      gap: 8px;
+    }
+    .order-list li:nth-child(odd)  { background: var(--row1); }
+    .order-list li:nth-child(even) { background: var(--row2); }
+    .order-list li .name { flex: 1; min-width: 0; }
+    .order-list li .time,
+    .order-list li .run-sum {
+      font-variant-numeric: tabular-nums;
+      color: var(--muted);
+      min-width: 72px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .order-list li .time.has { color: var(--accent); }
+    .order-list li .run-sum {
+      color: #ffffff;
+      opacity: 0.95;
+      font-size: 0.85em;
+    }
+    .order-list li .run-sum.has { color: #ffffff; }
+
+    .btn-row { margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap; }
+    button {
+      background: #1e293b;
+      color: var(--text);
+      border: 1px solid #334155;
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    button:hover { background: #334155; }
+    button.danger { border-color: #ef4444; color: #fca5a5; }
+
+    /* Probabilité */
+    #proba-section {
+      background: var(--card);
+      padding: 16px;
+      border-radius: 12px;
+      flex: 1 1 280px;
+      min-width: 250px;
+    }
+    #proba-section h2 { margin: 0 0 10px; font-size: 1.15rem; }
+    .proba-value {
+      font-size: 1.25rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      margin: 8px 0;
+      word-break: break-all;
+    }
+    .proba-value .fav { color: #4ade80; }
+    .proba-value .pct { color: var(--accent); }
+    .proba-value .zero { color: #ef4444; }
+    .speed-filters {
+      margin: 12px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.9rem;
+    }
+    .speed-filters label { cursor: pointer; display: flex; align-items: center; gap: 6px; }
+    .help-box {
+      margin-top: 12px;
+      padding: 10px;
+      background: #0f172a;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .help-box summary { cursor: pointer; color: var(--text); font-weight: 600; }
+
+    /* Best Times — colonnes compactes collées au nom */
+    .times-table {
+      width: max-content;
+      max-width: 100%;
+      border-collapse: collapse;
+      background: var(--card);
+      border-radius: 10px;
+      overflow: hidden;
+      table-layout: auto;
+    }
+    .times-table th, .times-table td {
+      padding: 8px 8px;
+      text-align: left;
+      border-bottom: 1px solid #1e293b;
+      vertical-align: middle;
+    }
+    .times-table th { background: #1e293b; position: sticky; top: 0; }
+    .times-table tr:nth-child(odd)  { background: var(--row1); }
+    .times-table tr:nth-child(even) { background: var(--row2); }
+    .times-table input, .times-table select {
+      background: #0f172a;
+      border: 1px solid #334155;
+      color: var(--text);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-variant-numeric: tabular-nums;
+    }
+    .type-col { width: 1%; white-space: nowrap; }
+    .col-time { width: 1%; white-space: nowrap; }
+    .col-speed { width: 1%; white-space: nowrap; }
+    .times-table th#th-game,
+    .times-table td:nth-child(2) {
+      white-space: nowrap;
+      padding-right: 6px;
+    }
+    .times-table td:nth-child(3),
+    .times-table td:nth-child(4),
+    .times-table th.col-time,
+    .times-table th.col-speed {
+      white-space: nowrap;
+      padding-left: 4px;
+      padding-right: 8px;
+    }
+    .times-table input { width: 110px; max-width: 110px; }
+    .times-table select { width: 120px; max-width: 120px; min-width: 110px; }
+    .type-dot {
+      display: inline-block;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+    }
+    .type-dot.t4v4 { background: var(--blue); }
+    .type-dot.t1v1 { background: var(--orange); }
+    .type-dot.t1v3 { background: var(--green); }
+    .game-name-cell {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .times-table img.thumb {
+      width: 48px; height: 36px;
+      object-fit: cover;
+      border-radius: 4px;
+      background: #1e293b;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="header-row">
+    <h1 id="page-title">Wii Party – MiniGame Tracker Solo Expert</h1>
+    <div class="lang-switch">
+      <button class="lang-btn" id="lang-btn" aria-haspopup="listbox" aria-expanded="false">
+        <span id="lang-btn-flag">🇫🇷</span>
+        <span id="lang-btn-label">Français</span>
+        <span style="opacity:0.6;font-size:0.8em;">▾</span>
+      </button>
+      <div class="lang-menu" id="lang-menu" role="listbox">
+        <button class="lang-option active" data-lang="fr" role="option">
+          <span>🇫🇷</span> Français
+        </button>
+        <button class="lang-option" data-lang="en" role="option">
+          <span>🇺🇸 / 🇬🇧</span> English
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="tracker" id="tab-tracker">Tracker</button>
+    <button class="tab-btn" data-tab="times" id="tab-times">Best Times</button>
+  </div>
+
+  <!-- ========== TRACKER ========== -->
+  <div id="tracker" class="panel active">
+    <div class="next-type">
+      <span id="label-next-type">Prochain type prévu :</span>
+      <span id="next-badge" class="type-badge">—</span>
+      <span id="progress" style="color:var(--muted); font-size:0.9rem;"></span>
+      <button id="btn-retour" onclick="undoLast()" title="Annuler le dernier mini-jeu sélectionné">Retour</button>
+    </div>
+
+    <div class="filter-bar">
+      <input type="search" id="search-tracker" placeholder="Rechercher un mini-jeu…">
+      <select id="sort-tracker">
+        <option value="alpha">Tri alphabétique</option>
+        <option value="time-asc">Meilleur temps ↑</option>
+        <option value="time-desc">Meilleur temps ↓</option>
+        <option value="speed-asc">Vitesse ↑ (lent → rapide)</option>
+        <option value="speed-desc">Vitesse ↓ (rapide → lent)</option>
+      </select>
+    </div>
+
+    <div class="grid" id="grid"></div>
+
+    <div class="bottom-row">
+      <div id="order-section">
+        <h2 id="label-order">Ordre d’apparition</h2>
+        <div class="cumul">
+          <span id="label-sob" style="font-size:0.95rem;font-weight:500;color:var(--muted);margin-right:8px;">Sum Of Best :</span>
+          <span id="cumul">0:00.000</span>
+        </div>
+        <ol class="order-list" id="appeared-list"></ol>
+        <div class="btn-row">
+          <button onclick="resetOrder()" class="danger" id="btn-reset">Réinitialiser l’ordre</button>
+          <button onclick="exportOrder()" id="btn-export">Exporter la liste</button>
+        </div>
+      </div>
+
+      <div id="proba-section">
+        <h2 id="label-proba">Probabilité (25 premiers)</h2>
+        <div class="proba-value" id="proba-display">—</div>
+
+        <div class="speed-filters" id="speed-filters">
+          <strong id="label-desired" style="margin-bottom:4px;">Mini-jeux désirés (vitesses) :</strong>
+          <label><input type="checkbox" value="tres-lent" checked> <span data-i18n-speed="tres-lent">Très Lent</span></label>
+          <label><input type="checkbox" value="lent" checked> <span data-i18n-speed="lent">Lent</span></label>
+          <label><input type="checkbox" value="moyen" checked> <span data-i18n-speed="moyen">Moyen</span></label>
+          <label><input type="checkbox" value="rapide" checked> <span data-i18n-speed="rapide">Rapide</span></label>
+          <label><input type="checkbox" value="tres-rapide" checked> <span data-i18n-speed="tres-rapide">Très Rapide</span></label>
+        </div>
+
+        <details class="help-box">
+          <summary id="help-summary">Comment est calculée la proba et comment utiliser ce calculateur ?</summary>
+          <p id="help-text" style="margin:8px 0 0;"></p>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== BEST TIMES ========== -->
+  <div id="times" class="panel">
+    <div class="filter-bar">
+      <button class="active" data-filter="all" id="filter-all">Tous</button>
+      <button data-filter="4v4">4v4</button>
+      <button data-filter="1v1">1v1</button>
+      <button data-filter="1v3">1v3</button>
+      <input type="search" id="search-times" placeholder="Rechercher un mini-jeu…" style="margin-left:auto; min-width:160px;">
+      <select id="sort-times">
+        <option value="alpha">Tri alphabétique</option>
+        <option value="time-asc">Meilleur temps ↑ (plus rapide)</option>
+        <option value="time-desc">Meilleur temps ↓ (plus lent)</option>
+        <option value="speed-asc">Vitesse ↑ (lent → rapide)</option>
+        <option value="speed-desc">Vitesse ↓ (rapide → lent)</option>
+        <option value="type">Par type</option>
+      </select>
+    </div>
+    <table class="times-table">
+      <thead>
+        <tr>
+          <th class="type-col" id="th-type">Type</th>
+          <th id="th-game">Mini-jeu</th>
+          <th class="col-time" id="th-time">Meilleur temps</th>
+          <th class="col-speed" id="th-speed">Vitesse</th>
+        </tr>
+      </thead>
+      <tbody id="times-body"></tbody>
+    </table>
+    <p id="times-help" style="color:var(--muted); font-size:0.85rem; margin-top:10px;"></p>
+  </div>
+
+  <script>
+    // ========== DONNÉES ==========
+    const GAMES = [
+      { name: "Barrel Daredevil", nameFr: "Arrêt calculé", type: "4v4" },
+      { name: "Chin-Up Champ", nameFr: "Tractions en folie", type: "4v4" },
+      { name: "Chop Chops", nameFr: "A vos couteaux !", type: "4v4" },
+      { name: "Flag Fracas", nameFr: "Course au drapeau", type: "4v4" },
+      { name: "Friendly Face-Off", nameFr: "Casse-tête de Mii", type: "4v4" },
+      { name: "Jumbo Jump", nameFr: "Saut à ski", type: "4v4" },
+      { name: "Saucer Snap", nameFr: "Photo d’ovni", type: "4v4" },
+      { name: "Smile Snap", nameFr: "Souriez !", type: "4v4" },
+      { name: "Stop Watchers", nameFr: "Chrono parfait", type: "4v4" },
+      { name: "Tropical Punch", nameFr: "Mise au poing", type: "4v4" },
+      { name: "Crash Balls", nameFr: "Mii en boule", type: "4v4" },
+      { name: "Moon Landing", nameFr: "Alunissage", type: "4v4" },
+      { name: "Ram Jam", nameFr: "Voie moutonneuse", type: "4v4" },
+      { name: "Zombie Tag", nameFr: "Zombies !", type: "4v4" },
+      { name: "Cosmic Capers", nameFr: "Course spatiale", type: "4v4" },
+      { name: "Cry Babies", nameFr: "Fais risette !", type: "4v4" },
+      { name: "Feathered Frenzy", nameFr: "Pluie de plumes", type: "4v4" },
+      { name: "Hammer Heads", nameFr: "Paf la taupe !", type: "4v4" },
+      { name: "Maze Daze", nameFr: "Labyrinthe tournis", type: "4v4" },
+      { name: "Pearl Plunder", nameFr: "Perles océanes", type: "4v4" },
+      { name: "Popgun Posse", nameFr: "Tireurs de l’Ouest", type: "4v4" },
+      { name: "Puzzle Pick-Up", nameFr: "Demi-puzzles", type: "4v4" },
+      { name: "Quicker Chipper", nameFr: "Swing parfait", type: "4v4" },
+      { name: "Shifty Gifts", nameFr: "Pluie de cadeaux", type: "4v4" },
+      { name: "Space Brawl", nameFr: "Bataille spatiale", type: "4v4" },
+      { name: "Spotlight Fight", nameFr: "Stars du disco", type: "4v4" },
+      { name: "Back Attack", nameFr: "Tir sur rails", type: "4v4" },
+      { name: "Chopper Hoppers", nameFr: "Hélicoptères !", type: "4v4" },
+      { name: "Derby Dash", nameFr: "Course hippique", type: "4v4" },
+      { name: "Flap Hurdles", nameFr: "Saut d’obstacles", type: "4v4" },
+      { name: "Goal Getters", nameFr: "Tirs au but", type: "4v4" },
+      { name: "Shutterpup", nameFr: "Photos de chiot", type: "4v4" },
+      { name: "Walk-Off", nameFr: "Distance parfaite", type: "4v4" },
+      { name: "Balloon Buggies", nameFr: "Buggy bombe", type: "4v4" },
+      { name: "Face Flip", nameFr: "Mii à la carte", type: "4v4" },
+      { name: "Follow Your Face", nameFr: "Mii en gobelets", type: "4v4" },
+      { name: "Rope Sling", nameFr: "Saut de liane", type: "4v4" },
+      { name: "Channel Changers", nameFr: "Zappez !", type: "1v1" },
+      { name: "Jangle Wranglers", nameFr: "Cloche-moutons", type: "1v1" },
+      { name: "Pop-Up Bandits", nameFr: "Gâchette facile", type: "1v1" },
+      { name: "Roll to the Goal", nameFr: "Labyrinthe rotatif", type: "1v1" },
+      { name: "Spring Time", nameFr: "Bâtons sauteurs", type: "1v1" },
+      { name: "Timber Topple", nameFr: "Les bûcherons", type: "1v1" },
+      { name: "Delivery Duel", nameFr: "Duel à deux roues", type: "1v1" },
+      { name: "Poppin' Pilots", nameFr: "Raid en biplan", type: "1v1" },
+      { name: "Fruit Focus", nameFr: "Mémoire des fruits", type: "1v1" },
+      { name: "Splash Bash", nameFr: "Le pendule", type: "1v3" },
+      { name: "Lumber Whacks", nameFr: "Ceinture noire", type: "1v3" },
+      { name: "Poserobics", nameFr: "La bonne pose", type: "1v3" },
+      { name: "Flying Fruit", nameFr: "Comptez les fruits", type: "1v3" },
+    ];
+
+    const SEQUENCE = [
+      "4v4","4v4","1v1","4v4","4v4","4v4","1v3","4v4","4v4","1v1",
+      "4v4","4v4","4v4","4v4","1v1","4v4","4v4","4v4","1v3","4v4",
+      "4v4","1v1","4v4","4v4","4v4","4v4","1v1","4v4","4v4","4v4",
+      "1v3","4v4","4v4","1v1","4v4","4v4","4v4","4v4","1v1","4v4",
+      "4v4","4v4","1v3","4v4","4v4","1v1","4v4","4v4","4v4","1v1"
+    ];
+
+    const SPEED_OPTIONS = [
+      { value: "", labelFr: "—", labelEn: "—" },
+      { value: "tres-lent", labelFr: "Très Lent", labelEn: "Very Slow" },
+      { value: "lent", labelFr: "Lent", labelEn: "Slow" },
+      { value: "moyen", labelFr: "Moyen", labelEn: "Medium" },
+      { value: "rapide", labelFr: "Rapide", labelEn: "Fast" },
+      { value: "tres-rapide", labelFr: "Très Rapide", labelEn: "Very Fast" },
+    ];
+
+    // ========== I18N ==========
+    const I18N = {
+      fr: {
+        pageTitle: "Wii Party – MiniGame Tracker Solo Expert",
+        tabTracker: "Tracker",
+        tabTimes: "Best Times",
+        nextType: "Prochain type prévu :",
+        btnRetour: "Retour",
+        btnRetourTitle: "Annuler le dernier mini-jeu sélectionné",
+        searchPlaceholder: "Rechercher un mini-jeu…",
+        sortAlpha: "Tri alphabétique",
+        sortTimeAsc: "Meilleur temps ↑",
+        sortTimeDesc: "Meilleur temps ↓",
+        sortTimeAscFull: "Meilleur temps ↑ (plus rapide)",
+        sortTimeDescFull: "Meilleur temps ↓ (plus lent)",
+        sortSpeedAsc: "Vitesse ↑ (lent → rapide)",
+        sortSpeedDesc: "Vitesse ↓ (rapide → lent)",
+        sortType: "Par type",
+        orderTitle: "Ordre d’apparition",
+        sob: "Sum Of Best :",
+        btnReset: "Réinitialiser l’ordre",
+        btnExport: "Exporter la liste",
+        filterAll: "Tous",
+        thType: "Type",
+        thGame: "Mini-jeu",
+        thTime: "Meilleur temps",
+        thSpeed: "Vitesse",
+        timesHelp: 'Format recommandé : <strong>H:MM:SS.mmm</strong> (ex. <code>0:01:23.456</code>) ou <code>M:SS.mmm</code> ou secondes.<br>La vitesse colore les cartes du Tracker (rouge = Très Lent → vert = Très Rapide).',
+        done: "Terminé !",
+        noMore: "Tous les mini-jeux de la séquence sont passés.",
+        noResult: "Aucun résultat pour cette recherche.",
+        noMoreType: (t) => `Plus aucun mini-jeu ${t} disponible (tous déjà marqués).`,
+        wrongType: (got, expected) => `Ce mini-jeu est de type ${got}, le prochain attendu est ${expected}.`,
+        resetConfirm: "Réinitialiser l’ordre d’apparition ? (temps et vitesses conservés)",
+        exportOk: "Liste copiée dans le presse-papier !",
+        cumul: "Cumul :",
+        langLabel: "Français",
+        langFlag: "🇫🇷",
+        probaTitle: "Probabilité d'une run (25 premiers)",
+        desiredLabel: "Mini-jeux désirés (vitesses) :",
+        helpSummary: "Comment est calculée la proba et comment utiliser ce calculateur ?",
+        helpText: `On regarde les <strong>25 premiers</strong> stages (ou ce qu’il en reste).<br><br>
+          Pour chaque type (4v4 / 1v1 / 1v3) on compare le nombre de cases encore à jouer de ce type avec le nombre de mini-jeux <em>désirés</em> encore disponibles de ce type.<br><br>
+          • S’il n’y a pas assez de désirés pour un type → <strong>0 %</strong><br>
+          • Sinon la proba est le produit des ratios pour chaque type :<br>
+          &nbsp;&nbsp;<code>P(désirés, cases) / P(total, cases)</code><br><br>
+          Si un mini-jeu non désiré apparaît dans la run, la proba passe immédiatement à 0 %.<br><br>
+		  Pour utiliser ce calculateur, régler la vitesse individuelle de chaque mini-jeu puis cocher les cases des mini-jeux dont la vitesse vous convient pour vos runs et voyez les probabilités mises à jour à mesure que vous avancez dans votre run.`,
+        runDone: "Run terminée (25+)",
+        nonDesiredAppeared: "Un mini-jeu non désiré est déjà apparu.",
+        notEnough: (t, d, n) => `Pas assez de ${t} désirés restants (${d} < ${n}).`,
+      },
+      en: {
+        pageTitle: "Wii Party – Solo Expert MiniGame Tracker",
+        tabTracker: "Tracker",
+        tabTimes: "Best Times",
+        nextType: "Next expected type:",
+        btnRetour: "Undo",
+        btnRetourTitle: "Undo last selected minigame",
+        searchPlaceholder: "Search a minigame…",
+        sortAlpha: "Alphabetical",
+        sortTimeAsc: "Best time ↑",
+        sortTimeDesc: "Best time ↓",
+        sortTimeAscFull: "Best time ↑ (fastest)",
+        sortTimeDescFull: "Best time ↓ (slowest)",
+        sortSpeedAsc: "Speed ↑ (slow → fast)",
+        sortSpeedDesc: "Speed ↓ (fast → slow)",
+        sortType: "By type",
+        orderTitle: "Appearance order",
+        sob: "Sum Of Best:",
+        btnReset: "Reset order",
+        btnExport: "Export list",
+        filterAll: "All",
+        thType: "Type",
+        thGame: "Minigame",
+        thTime: "Best time",
+        thSpeed: "Speed",
+        timesHelp: 'Recommended format: <strong>H:MM:SS.mmm</strong> (e.g. <code>0:01:23.456</code>) or <code>M:SS.mmm</code> or seconds.<br>Speed colors the Tracker cards (red = Very Slow → green = Very Fast).',
+        done: "Done!",
+        noMore: "All minigames in the sequence have been played.",
+        noResult: "No results for this search.",
+        noMoreType: (t) => `No more ${t} minigames available (all already marked).`,
+        wrongType: (got, expected) => `This minigame is type ${got}, next expected is ${expected}.`,
+        resetConfirm: "Reset the appearance order? (times and speeds are kept)",
+        exportOk: "List copied to clipboard!",
+        cumul: "Total:",
+        langLabel: "English",
+        langFlag: "🇺🇸 / 🇬🇧",
+        probaTitle: "Probability of a run (first 25)",
+        desiredLabel: "Desired minigames (speeds):",
+        helpSummary: "How is the probability calculated and how to use this tool?",
+        helpText: `We look at the <strong>first 25</strong> stages (or whatever remains).<br><br>
+          For each type (4v4 / 1v1 / 1v3) we compare the number of remaining slots of that type with the number of remaining <em>desired</em> minigames of that type.<br><br>
+          • If there are not enough desired for a type → <strong>0 %</strong><br>
+          • Otherwise the probability is the product of the ratios for each type:<br>
+          &nbsp;&nbsp;<code>P(desired, slots) / P(total, slots)</code><br><br>
+          If a non-desired minigame appears in the run, the probability immediately drops to 0 % letting you know you should probably restart.<br><br>
+		  To use this tool, simply set every mini-game a speed (going from Very Slow to Very Fast) then check the speeds you deem acceptable for your runs to have a percentage of how likely you are to get it as the run progresses.`,
+        runDone: "Run finished (25+)",
+        nonDesiredAppeared: "A non-desired minigame has already appeared.",
+        notEnough: (t, d, n) => `Not enough remaining desired ${t} (${d} < ${n}).`,
+      }
+    };
+
+    // ========== STATE ==========
+    let lang = localStorage.getItem("wiiPartyLang") || "fr";
+    let order = JSON.parse(localStorage.getItem("wiiPartyOrder") || "[]");
+    let bestTimes = JSON.parse(localStorage.getItem("wiiPartyBestTimes") || "{}");
+    let speeds = JSON.parse(localStorage.getItem("wiiPartySpeeds") || "{}");
+    let desiredSpeeds = JSON.parse(localStorage.getItem("wiiPartyDesiredSpeeds") || '["tres-lent","lent","moyen","rapide","tres-rapide"]');
+
+    let trackerSearch = "";
+    let trackerSort = "alpha";
+    let currentFilter = "all";
+    let currentSort = "alpha";
+    let currentSearch = "";
+
+    function t(key, ...args) {
+      const val = I18N[lang][key];
+      return typeof val === "function" ? val(...args) : val;
+    }
+
+    function displayName(g) {
+      return lang === "fr" ? g.nameFr : g.name;
+    }
+
+    function matchesSearch(g, q) {
+      if (!q) return true;
+      const ql = q.toLowerCase();
+      return g.name.toLowerCase().includes(ql) || g.nameFr.toLowerCase().includes(ql);
+    }
+
+    function getType(name) {
+      const g = GAMES.find(x => x.name === name);
+      return g ? g.type : "?";
+    }
+
+    function getGameByName(name) {
+      return GAMES.find(x => x.name === name);
+    }
+
+    function formatTime(sec) {
+      if (sec == null || isNaN(sec) || sec < 0) return "—";
+      const totalMs = Math.round(sec * 1000);
+      const ms = totalMs % 1000;
+      const totalSec = Math.floor(totalMs / 1000);
+      const s = totalSec % 60;
+      const totalMin = Math.floor(totalSec / 60);
+      const m = totalMin % 60;
+      const h = Math.floor(totalMin / 60);
+      const msStr = String(ms).padStart(3, "0");
+      const sStr = String(s).padStart(2, "0");
+      const mStr = String(m).padStart(2, "0");
+      if (h > 0) return `${h}:${mStr}:${sStr}.${msStr}`;
+      return `${m}:${sStr}.${msStr}`;
+    }
+
+    function parseTime(str) {
+      if (!str || !str.trim()) return null;
+      str = str.trim().replace(",", ".");
+      const parts = str.split(":").map(p => p.trim());
+      if (parts.length === 1) {
+        const n = parseFloat(parts[0]);
+        return isNaN(n) ? null : n;
+      }
+      if (parts.length === 2) {
+        return (parseFloat(parts[0]) || 0) * 60 + (parseFloat(parts[1]) || 0);
+      }
+      if (parts.length === 3) {
+        return (parseFloat(parts[0]) || 0) * 3600 + (parseFloat(parts[1]) || 0) * 60 + (parseFloat(parts[2]) || 0);
+      }
+      return null;
+    }
+
+    function getNextType() {
+      const idx = order.length;
+      if (idx >= SEQUENCE.length) return null;
+      return SEQUENCE[idx];
+    }
+
+    function fallingFact(n, k) {
+      if (k < 0 || k > n) return 0;
+      let r = 1;
+      for (let i = 0; i < k; i++) r *= (n - i);
+      return r;
+    }
+
+    function isDesired(name) {
+      const sp = speeds[name];
+      if (!sp) return false;
+      return desiredSpeeds.includes(sp);
+    }
+
+    // Rang de vitesse pour le tri (0 = non défini, 1 = très lent … 5 = très rapide)
+    const SPEED_RANK = { "tres-lent": 1, "lent": 2, "moyen": 3, "rapide": 4, "tres-rapide": 5 };
+    function speedRank(name) {
+      return SPEED_RANK[speeds[name]] || 0;
+    }
+
+    // ========== PROBABILITÉ ==========
+    function computeProba() {
+      const TARGET = 25;
+      const already = order.length;
+
+      if (already >= TARGET) {
+        return { text: t("runDone"), pct: null, zero: false };
+      }
+
+      for (const name of order) {
+        if (!isDesired(name)) {
+          return { pct: 0, zero: true, reason: t("nonDesiredAppeared"), fav: 0, tot: 0 };
+        }
+      }
+
+      const remainingSlots = SEQUENCE.slice(already, TARGET);
+      const need = { "4v4": 0, "1v1": 0, "1v3": 0 };
+      remainingSlots.forEach(tp => need[tp]++);
+
+      const remainingGames = GAMES.filter(g => !order.includes(g.name));
+      const totalR = { "4v4": 0, "1v1": 0, "1v3": 0 };
+      const desR  = { "4v4": 0, "1v1": 0, "1v3": 0 };
+      remainingGames.forEach(g => {
+        totalR[g.type]++;
+        if (isDesired(g.name)) desR[g.type]++;
+      });
+
+      for (const tp of ["4v4", "1v1", "1v3"]) {
+        if (desR[tp] < need[tp]) {
+          return {
+            pct: 0,
+            zero: true,
+            reason: t("notEnough", tp, desR[tp], need[tp]),
+            fav: 0,
+            tot: 0
+          };
+        }
+      }
+
+      let fav = 1, tot = 1;
+      for (const tp of ["4v4", "1v1", "1v3"]) {
+        const k = need[tp];
+        if (k === 0) continue;
+        fav *= fallingFact(desR[tp], k);
+        tot *= fallingFact(totalR[tp], k);
+      }
+
+      if (tot === 0) return { text: "0 / 0", pct: 0, zero: true, fav: 0, tot: 0 };
+
+      const pct = (fav / tot) * 100;
+      return { fav, tot, pct, zero: pct === 0 };
+    }
+
+    function formatBigNumber(n) {
+      if (n === 0) return "0";
+      // Notation scientifique si > 9 chiffres
+      if (n >= 1e9) {
+        return n.toExponential(4).replace("e+", "E+").replace("e-", "E-");
+      }
+      return n.toLocaleString(lang === "fr" ? "fr-FR" : "en-US");
+    }
+
+    function renderProba() {
+      const res = computeProba();
+      const el = document.getElementById("proba-display");
+      if (res.pct == null) {
+        el.innerHTML = res.text;
+      } else if (res.zero) {
+        el.innerHTML = `<span class="zero">0 / 0</span> <span class="zero">(0 %)</span>`;
+        if (res.reason) el.innerHTML += `<div style="font-size:0.8rem;color:var(--muted);margin-top:4px;">${res.reason}</div>`;
+      } else {
+        const favStr = formatBigNumber(res.fav);
+        const totStr = formatBigNumber(res.tot);
+        el.innerHTML = `<span class="fav">${favStr}</span> / ${totStr} <span class="pct">(${res.pct.toFixed(4)} %)</span>`;
+      }
+    }
+
+    // ========== APPLY LANGUAGE ==========
+    function applyLanguage() {
+      document.documentElement.lang = lang;
+      document.title = t("pageTitle");
+      document.getElementById("page-title").textContent = t("pageTitle");
+      document.getElementById("tab-tracker").textContent = t("tabTracker");
+      document.getElementById("tab-times").textContent = t("tabTimes");
+      document.getElementById("label-next-type").textContent = t("nextType");
+      const btnRetour = document.getElementById("btn-retour");
+      btnRetour.textContent = t("btnRetour");
+      btnRetour.title = t("btnRetourTitle");
+      document.getElementById("search-tracker").placeholder = t("searchPlaceholder");
+      document.getElementById("search-times").placeholder = t("searchPlaceholder");
+
+      const sortTracker = document.getElementById("sort-tracker");
+      sortTracker.options[0].text = t("sortAlpha");
+      sortTracker.options[1].text = t("sortTimeAsc");
+      sortTracker.options[2].text = t("sortTimeDesc");
+      if (sortTracker.options[3]) sortTracker.options[3].text = t("sortSpeedAsc");
+      if (sortTracker.options[4]) sortTracker.options[4].text = t("sortSpeedDesc");
+
+      const sortTimes = document.getElementById("sort-times");
+      sortTimes.options[0].text = t("sortAlpha");
+      sortTimes.options[1].text = t("sortTimeAscFull");
+      sortTimes.options[2].text = t("sortTimeDescFull");
+      if (sortTimes.options[3]) sortTimes.options[3].text = t("sortSpeedAsc");
+      if (sortTimes.options[4]) sortTimes.options[4].text = t("sortSpeedDesc");
+      if (sortTimes.options[5]) sortTimes.options[5].text = t("sortType");
+
+      document.getElementById("label-order").textContent = t("orderTitle");
+      document.getElementById("label-sob").textContent = t("sob");
+      document.getElementById("btn-reset").textContent = t("btnReset");
+      document.getElementById("btn-export").textContent = t("btnExport");
+      document.getElementById("filter-all").textContent = t("filterAll");
+      document.getElementById("th-type").textContent = t("thType");
+      document.getElementById("th-game").textContent = t("thGame");
+      document.getElementById("th-time").textContent = t("thTime");
+      document.getElementById("th-speed").textContent = t("thSpeed");
+      document.getElementById("times-help").innerHTML = t("timesHelp");
+      document.getElementById("label-proba").textContent = t("probaTitle");
+      document.getElementById("label-desired").textContent = t("desiredLabel");
+      document.getElementById("help-summary").textContent = t("helpSummary");
+      document.getElementById("help-text").innerHTML = t("helpText");
+
+      document.getElementById("lang-btn-flag").textContent = t("langFlag");
+      document.getElementById("lang-btn-label").textContent = t("langLabel");
+
+      // Speed labels in filters
+      document.querySelectorAll("[data-i18n-speed]").forEach(el => {
+        const v = el.dataset.i18nSpeed;
+        const opt = SPEED_OPTIONS.find(o => o.value === v);
+        if (opt) el.textContent = lang === "fr" ? opt.labelFr : opt.labelEn;
+      });
+
+      document.querySelectorAll(".lang-option").forEach(opt => {
+        opt.classList.toggle("active", opt.dataset.lang === lang);
+      });
+
+      renderTracker();
+      if (document.getElementById("times").classList.contains("active")) {
+        renderTimes();
+      }
+    }
+
+    // ========== RENDER TRACKER ==========
+    function renderTracker() {
+      const next = getNextType();
+      const badge = document.getElementById("next-badge");
+      const progress = document.getElementById("progress");
+      const btnRetour = document.getElementById("btn-retour");
+
+      badge.style.background = "";
+      if (next) {
+        badge.textContent = next;
+        badge.className = "type-badge t" + next;
+        progress.textContent = `(${order.length + 1} / ${SEQUENCE.length})`;
+      } else {
+        badge.textContent = t("done");
+        badge.className = "type-badge";
+        badge.style.background = "#64748b";
+        progress.textContent = `(${order.length} / ${SEQUENCE.length})`;
+      }
+      if (btnRetour) btnRetour.disabled = order.length === 0;
+
+      const grid = document.getElementById("grid");
+      grid.innerHTML = "";
+      let candidates = GAMES.filter(g => g.type === next && !order.includes(g.name));
+
+      if (trackerSearch) {
+        candidates = candidates.filter(g => matchesSearch(g, trackerSearch));
+      }
+
+      candidates.sort((a, b) => {
+        if (trackerSort === "alpha") {
+          return displayName(a).localeCompare(displayName(b), lang === "fr" ? "fr" : "en");
+        }
+        if (trackerSort === "speed-asc" || trackerSort === "speed-desc") {
+          const ra = speedRank(a.name), rb = speedRank(b.name);
+          // Sans vitesse → à la fin
+          if (ra === 0 && rb === 0) return displayName(a).localeCompare(displayName(b), lang === "fr" ? "fr" : "en");
+          if (ra === 0) return 1;
+          if (rb === 0) return -1;
+          return trackerSort === "speed-asc" ? ra - rb : rb - ra;
+        }
+        const ta = bestTimes[a.name], tb = bestTimes[b.name];
+        const hasA = ta != null, hasB = tb != null;
+        if (hasA && !hasB) return -1;
+        if (!hasA && hasB) return 1;
+        if (!hasA && !hasB) return displayName(a).localeCompare(displayName(b), lang === "fr" ? "fr" : "en");
+        return trackerSort === "time-asc" ? ta - tb : tb - ta;
+      });
+
+      if (!next) {
+        grid.innerHTML = `<p style='color:var(--muted)'>${t("noMore")}</p>`;
+      } else if (candidates.length === 0) {
+        grid.innerHTML = `<p style='color:var(--muted)'>${trackerSearch ? t("noResult") : t("noMoreType", next)}</p>`;
+      } else {
+        candidates.forEach(g => {
+          const sp = speeds[g.name] || "";
+          const div = document.createElement("div");
+          div.className = "game" + (sp ? " speed-" + sp : "");
+          div.innerHTML = `
+            <img src="images/${encodeURIComponent(g.name)}.png"
+                 alt="${displayName(g)}"
+                 onerror="this.src='https://placehold.co/120x90/1e293b/94a3b8?text=${encodeURIComponent(displayName(g))}'">
+            <span>${displayName(g)}</span>
+          `;
+          div.onclick = () => toggle(g.name);
+          grid.appendChild(div);
+        });
+      }
+
+      // Liste ordre + running sum + couleur selon vitesse
+      const list = document.getElementById("appeared-list");
+      let total = 0;
+      list.innerHTML = order.map((name, i) => {
+        const g = getGameByName(name);
+        const label = g ? displayName(g) : name;
+        const tm = bestTimes[name];
+        if (tm != null) total += tm;
+        const timeStr = formatTime(tm);
+        const has = tm != null;
+        const runSumStr = formatTime(total);
+        const sp = speeds[name] || "";
+        const speedClass = sp ? `time-speed-${sp}` : (has ? "has" : "");
+        return `<li>
+          <span class="name">${i + 1}. ${label}</span>
+          <span class="time ${speedClass}">${timeStr}</span>
+          <span class="run-sum ${has ? "has" : ""}">${runSumStr}</span>
+        </li>`;
+      }).join("");
+      document.getElementById("cumul").textContent = formatTime(total);
+
+      renderProba();
+    }
+
+    function toggle(name) {
+      const idx = order.indexOf(name);
+      if (idx === -1) {
+        const next = getNextType();
+        if (getType(name) !== next) {
+          alert(t("wrongType", getType(name), next));
+          return;
+        }
+        order.push(name);
+      } else {
+        order.splice(idx, 1);
+      }
+      localStorage.setItem("wiiPartyOrder", JSON.stringify(order));
+      renderTracker();
+    }
+
+    function undoLast() {
+      if (order.length === 0) return;
+      order.pop();
+      localStorage.setItem("wiiPartyOrder", JSON.stringify(order));
+      renderTracker();
+    }
+
+    function resetOrder() {
+      if (confirm(t("resetConfirm"))) {
+        order = [];
+        localStorage.removeItem("wiiPartyOrder");
+        renderTracker();
+      }
+    }
+
+    function exportOrder() {
+      const lines = order.map((n, i) => {
+        const g = getGameByName(n);
+        const label = g ? displayName(g) : n;
+        const tm = bestTimes[n];
+        return `${i + 1}. ${label}${tm != null ? " — " + formatTime(tm) : ""}`;
+      });
+      const total = order.reduce((s, n) => s + (bestTimes[n] || 0), 0);
+      lines.push("", t("cumul") + " " + formatTime(total));
+      navigator.clipboard.writeText(lines.join("\n")).then(() => alert(t("exportOk")));
+    }
+
+    // ========== RENDER BEST TIMES ==========
+    function renderTimes() {
+      const tbody = document.getElementById("times-body");
+      let list = currentFilter === "all" ? [...GAMES] : GAMES.filter(g => g.type === currentFilter);
+
+      if (currentSearch) {
+        list = list.filter(g => matchesSearch(g, currentSearch));
+      }
+
+      list.sort((a, b) => {
+        if (currentSort === "alpha" || currentSort === "type") {
+          if (currentSort === "type" && a.type !== b.type) return a.type.localeCompare(b.type);
+          return displayName(a).localeCompare(displayName(b), lang === "fr" ? "fr" : "en");
+        }
+        if (currentSort === "speed-asc" || currentSort === "speed-desc") {
+          const ra = speedRank(a.name), rb = speedRank(b.name);
+          if (ra === 0 && rb === 0) return displayName(a).localeCompare(displayName(b), lang === "fr" ? "fr" : "en");
+          if (ra === 0) return 1;
+          if (rb === 0) return -1;
+          return currentSort === "speed-asc" ? ra - rb : rb - ra;
+        }
+        const ta = bestTimes[a.name], tb = bestTimes[b.name];
+        const hasA = ta != null, hasB = tb != null;
+        if (hasA && !hasB) return -1;
+        if (!hasA && hasB) return 1;
+        if (!hasA && !hasB) return displayName(a).localeCompare(displayName(b), lang === "fr" ? "fr" : "en");
+        return currentSort === "time-asc" ? ta - tb : tb - ta;
+      });
+
+      tbody.innerHTML = list.map(g => {
+        const val = bestTimes[g.name];
+        const display = val != null ? formatTime(val) : "";
+        const sp = speeds[g.name] || "";
+        const opts = SPEED_OPTIONS.map(o => {
+          const lab = lang === "fr" ? o.labelFr : o.labelEn;
+          return `<option value="${o.value}" ${o.value === sp ? "selected" : ""}>${lab}</option>`;
+        }).join("");
+        return `<tr>
+          <td><span class="type-dot t${g.type}"></span> ${g.type}</td>
+          <td>
+            <div class="game-name-cell">
+              <img class="thumb" src="images/${encodeURIComponent(g.name)}.png" alt=""
+                   onerror="this.src='https://placehold.co/48x36/1e293b/94a3b8?text='">
+              <span>${displayName(g)}</span>
+            </div>
+          </td>
+          <td><input type="text" value="${display}" data-name="${g.name}" placeholder="0:01:23.456"></td>
+          <td><select data-speed-name="${g.name}">${opts}</select></td>
+        </tr>`;
+      }).join("");
+
+      tbody.querySelectorAll("input[data-name]").forEach(inp => {
+        inp.addEventListener("change", () => {
+          const name = inp.dataset.name;
+          const parsed = parseTime(inp.value);
+          if (parsed == null) {
+            delete bestTimes[name];
+            inp.value = "";
+          } else {
+            bestTimes[name] = parsed;
+            inp.value = formatTime(parsed);
+          }
+          localStorage.setItem("wiiPartyBestTimes", JSON.stringify(bestTimes));
+          renderTracker();
+          if (currentSort.startsWith("time")) renderTimes();
+        });
+      });
+
+      tbody.querySelectorAll("select[data-speed-name]").forEach(sel => {
+        sel.addEventListener("change", () => {
+          const name = sel.dataset.speedName;
+          if (sel.value) speeds[name] = sel.value;
+          else delete speeds[name];
+          localStorage.setItem("wiiPartySpeeds", JSON.stringify(speeds));
+          renderTracker();
+          renderProba();
+        });
+      });
+    }
+
+    // ========== EVENTS ==========
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+        document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById(btn.dataset.tab).classList.add("active");
+        if (btn.dataset.tab === "times") renderTimes();
+      });
+    });
+
+    document.querySelectorAll(".filter-bar button[data-filter]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".filter-bar button[data-filter]").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentFilter = btn.dataset.filter;
+        renderTimes();
+      });
+    });
+
+    document.getElementById("search-times").addEventListener("input", e => {
+      currentSearch = e.target.value.trim();
+      renderTimes();
+    });
+    document.getElementById("sort-times").addEventListener("change", e => {
+      currentSort = e.target.value;
+      renderTimes();
+    });
+    document.getElementById("search-tracker").addEventListener("input", e => {
+      trackerSearch = e.target.value.trim();
+      renderTracker();
+    });
+    document.getElementById("sort-tracker").addEventListener("change", e => {
+      trackerSort = e.target.value;
+      renderTracker();
+    });
+
+    document.querySelectorAll("#speed-filters input").forEach(cb => {
+      cb.checked = desiredSpeeds.includes(cb.value);
+      cb.addEventListener("change", () => {
+        desiredSpeeds = [...document.querySelectorAll("#speed-filters input:checked")].map(c => c.value);
+        localStorage.setItem("wiiPartyDesiredSpeeds", JSON.stringify(desiredSpeeds));
+        renderProba();
+      });
+    });
+
+    // Language
+    const langBtn = document.getElementById("lang-btn");
+    const langMenu = document.getElementById("lang-menu");
+    langBtn.addEventListener("click", e => {
+      e.stopPropagation();
+      const open = langMenu.classList.toggle("open");
+      langBtn.setAttribute("aria-expanded", open);
+    });
+    document.querySelectorAll(".lang-option").forEach(opt => {
+      opt.addEventListener("click", () => {
+        lang = opt.dataset.lang;
+        localStorage.setItem("wiiPartyLang", lang);
+        langMenu.classList.remove("open");
+        langBtn.setAttribute("aria-expanded", "false");
+        applyLanguage();
+      });
+    });
+    document.addEventListener("click", () => {
+      langMenu.classList.remove("open");
+      langBtn.setAttribute("aria-expanded", "false");
+    });
+
+    // Init
+    applyLanguage();
+  </script>
+</body>
+</html>
