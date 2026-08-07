@@ -378,7 +378,13 @@
           <span>🇫🇷</span> Français
         </button>
         <button class="lang-option" data-lang="en" role="option">
-          <span>🇺🇸 / 🇬🇧</span> English
+          <span>🇺🇸</span> English (US)
+        </button>
+        <button class="lang-option" data-lang="en-uk" role="option">
+          <span>🇬🇧</span> English (UK)
+        </button>
+        <button class="lang-option" data-lang="de" role="option">
+          <span>🇩🇪</span> Deutsch
         </button>
       </div>
     </div>
@@ -480,56 +486,56 @@
   <script>
     // ========== DONNÉES ==========
     const GAMES = [
-      { name: "Barrel Daredevil", nameFr: "Arrêt calculé", type: "4v4" },
-      { name: "Chin-Up Champ", nameFr: "Tractions en folie", type: "4v4" },
-      { name: "Chop Chops", nameFr: "A vos couteaux !", type: "4v4" },
-      { name: "Flag Fracas", nameFr: "Course au drapeau", type: "4v4" },
-      { name: "Friendly Face-Off", nameFr: "Casse-tête de Mii", type: "4v4" },
-      { name: "Jumbo Jump", nameFr: "Saut à ski", type: "4v4" },
-      { name: "Saucer Snap", nameFr: "Photo d’ovni", type: "4v4" },
-      { name: "Smile Snap", nameFr: "Souriez !", type: "4v4" },
-      { name: "Stop Watchers", nameFr: "Chrono parfait", type: "4v4" },
-      { name: "Tropical Punch", nameFr: "Mise au poing", type: "4v4" },
-      { name: "Crash Balls", nameFr: "Mii en boule", type: "4v4" },
-      { name: "Moon Landing", nameFr: "Alunissage", type: "4v4" },
-      { name: "Ram Jam", nameFr: "Voie moutonneuse", type: "4v4" },
-      { name: "Zombie Tag", nameFr: "Zombies !", type: "4v4" },
-      { name: "Cosmic Capers", nameFr: "Course spatiale", type: "4v4" },
-      { name: "Cry Babies", nameFr: "Fais risette !", type: "4v4" },
-      { name: "Feathered Frenzy", nameFr: "Pluie de plumes", type: "4v4" },
-      { name: "Hammer Heads", nameFr: "Paf la taupe !", type: "4v4" },
-      { name: "Maze Daze", nameFr: "Labyrinthe tournis", type: "4v4" },
-      { name: "Pearl Plunder", nameFr: "Perles océanes", type: "4v4" },
-      { name: "Popgun Posse", nameFr: "Tireurs de l’Ouest", type: "4v4" },
-      { name: "Puzzle Pick-Up", nameFr: "Demi-puzzles", type: "4v4" },
-      { name: "Quicker Chipper", nameFr: "Swing parfait", type: "4v4" },
-      { name: "Shifty Gifts", nameFr: "Pluie de cadeaux", type: "4v4" },
-      { name: "Space Brawl", nameFr: "Bataille spatiale", type: "4v4" },
-      { name: "Spotlight Fight", nameFr: "Stars du disco", type: "4v4" },
-      { name: "Back Attack", nameFr: "Tir sur rails", type: "4v4" },
-      { name: "Chopper Hoppers", nameFr: "Hélicoptères !", type: "4v4" },
-      { name: "Derby Dash", nameFr: "Course hippique", type: "4v4" },
-      { name: "Flap Hurdles", nameFr: "Saut d’obstacles", type: "4v4" },
-      { name: "Goal Getters", nameFr: "Tirs au but", type: "4v4" },
-      { name: "Shutterpup", nameFr: "Photos de chiot", type: "4v4" },
-      { name: "Walk-Off", nameFr: "Distance parfaite", type: "4v4" },
-      { name: "Balloon Buggies", nameFr: "Buggy bombe", type: "4v4" },
-      { name: "Face Flip", nameFr: "Mii à la carte", type: "4v4" },
-      { name: "Follow Your Face", nameFr: "Mii en gobelets", type: "4v4" },
-      { name: "Rope Sling", nameFr: "Saut de liane", type: "4v4" },
-      { name: "Channel Changers", nameFr: "Zappez !", type: "1v1" },
-      { name: "Jangle Wranglers", nameFr: "Cloche-moutons", type: "1v1" },
-      { name: "Pop-Up Bandits", nameFr: "Gâchette facile", type: "1v1" },
-      { name: "Roll to the Goal", nameFr: "Labyrinthe rotatif", type: "1v1" },
-      { name: "Spring Time", nameFr: "Bâtons sauteurs", type: "1v1" },
-      { name: "Timber Topple", nameFr: "Les bûcherons", type: "1v1" },
-      { name: "Delivery Duel", nameFr: "Duel à deux roues", type: "1v1" },
-      { name: "Poppin' Pilots", nameFr: "Raid en biplan", type: "1v1" },
-      { name: "Fruit Focus", nameFr: "Mémoire des fruits", type: "1v1" },
-      { name: "Splash Bash", nameFr: "Le pendule", type: "1v3" },
-      { name: "Lumber Whacks", nameFr: "Ceinture noire", type: "1v3" },
-      { name: "Poserobics", nameFr: "La bonne pose", type: "1v3" },
-      { name: "Flying Fruit", nameFr: "Comptez les fruits", type: "1v3" },
+      { name: "Barrel Daredevil", nameFr: "Arrêt calculé", nameDe: "Fass fällt", type: "4v4" },
+      { name: "Chin-Up Champ", nameFr: "Tractions en folie", nameDe: "Klimmzug-Champion", type: "4v4" },
+      { name: "Chop Chops", nameFr: "A vos couteaux !", nameDe: "Küchenmeister", type: "4v4" },
+      { name: "Flag Fracas", nameFr: "Course au drapeau", nameDe: "Strandsprint", type: "4v4" },
+      { name: "Friendly Face-Off", nameFr: "Casse-tête de Mii", nameDe: "Portrait-Puzzle", type: "4v4" },
+      { name: "Jumbo Jump", nameFr: "Saut à ski", nameDe: "Skispringen", type: "4v4" },
+      { name: "Saucer Snap", nameFr: "Photo d’ovni", nameDe: "Foto-Reflex", type: "4v4" },
+      { name: "Smile Snap", nameFr: "Souriez !", nameDe: "Cheeeese", type: "4v4" },
+      { name: "Stop Watchers", nameFr: "Chrono parfait", nameDe: "Innere Uhr", type: "4v4" },
+      { name: "Tropical Punch", nameFr: "Mise au poing", nameDe: "Fliegende Fäuste", type: "4v4" },
+      { name: "Crash Balls", nameFr: "Mii en boule", nameUk: "Ball Brawl", nameDe: "Kollisionskurs", type: "4v4" },
+      { name: "Moon Landing", nameFr: "Alunissage", nameUk: "Lunar Landers", nameDe: "Moonlandung", type: "4v4" },
+      { name: "Ram Jam", nameFr: "Voie moutonneuse", nameDe: "Schafstau", type: "4v4" },
+      { name: "Zombie Tag", nameFr: "Zombies !", nameDe: "Friedhof-Flucht", type: "4v4" },
+      { name: "Cosmic Capers", nameFr: "Course spatiale", nameUk: "Space Race", nameDe: "Weltraumrennen", type: "4v4" },
+      { name: "Cry Babies", nameFr: "Fais risette !", nameDe: "Wettwiegen", type: "4v4" },
+      { name: "Feathered Frenzy", nameFr: "Pluie de plumes", nameDe: "Federn Fangen", type: "4v4" },
+      { name: "Hammer Heads", nameFr: "Paf la taupe !", nameDe: "Maulwurf-Klopfen", type: "4v4" },
+      { name: "Maze Daze", nameFr: "Labyrinthe tournis", nameDe: "Torkel-Labyrinth", type: "4v4" },
+      { name: "Pearl Plunder", nameFr: "Perles océanes", nameDe: "Perlen plündern", type: "4v4" },
+      { name: "Popgun Posse", nameFr: "Tireurs de l’Ouest", nameDe: "Büchsenschützen", type: "4v4" },
+      { name: "Puzzle Pick-Up", nameFr: "Demi-puzzles", nameDe: "Puzzle-Gewusel", type: "4v4" },
+      { name: "Quicker Chipper", nameFr: "Swing parfait", nameDe: "Tempo-Golf", type: "4v4" },
+      { name: "Shifty Gifts", nameFr: "Pluie de cadeaux", nameDe: "Paket-Panik", type: "4v4" },
+      { name: "Space Brawl", nameFr: "Bataille spatiale", nameDe: "Showdown im All", type: "4v4" },
+      { name: "Spotlight Fight", nameFr: "Stars du disco", nameDe: "Im Rampenlicht", type: "4v4" },
+      { name: "Back Attack", nameFr: "Tir sur rails", nameDe: "Toter Winkel", type: "4v4" },
+      { name: "Chopper Hoppers", nameFr: "Hélicoptères !", nameDe: "Rettungshelikopter", type: "4v4" },
+      { name: "Derby Dash", nameFr: "Course hippique", nameDe: "Top Galopp", type: "4v4" },
+      { name: "Flap Hurdles", nameFr: "Saut d’obstacles", nameUk: "Hurdle Hover", nameDe: "Hürden-Hopsen", type: "4v4" },
+      { name: "Goal Getters", nameFr: "Tirs au but", nameDe: "Torschusstraining", type: "4v4" },
+      { name: "Shutterpup", nameFr: "Photos de chiot", nameDe: "Park-Paparazzi", type: "4v4" },
+      { name: "Walk-Off", nameFr: "Distance parfaite", nameDe: "Langläufer", type: "4v4" },
+      { name: "Balloon Buggies", nameFr: "Buggy bombe", nameDe: "Ballon-Buggys", type: "4v4" },
+      { name: "Face Flip", nameFr: "Mii à la carte", nameDe: "Mii à la carte", type: "4v4" },
+      { name: "Follow Your Face", nameFr: "Mii en gobelets", nameDe: "Hütchenspiel", type: "4v4" },
+      { name: "Rope Sling", nameFr: "Saut de liane", nameUk: "Lofty Leap", nameDe: "Lianenweitsprung", type: "4v4" },
+      { name: "Channel Changers", nameFr: "Zappez !", nameDe: "Kanal-Wahl", type: "1v1" },
+      { name: "Jangle Wranglers", nameFr: "Cloche-moutons", nameUk: "Shepherd Scramble", nameDe: "Wetthüten", type: "1v1" },
+      { name: "Pop-Up Bandits", nameFr: "Gâchette facile", nameDe: "Pappbanditen", type: "1v1" },
+      { name: "Roll to the Goal", nameFr: "Labyrinthe rotatif", nameDe: "Murmel-Labyrinth", type: "1v1" },
+      { name: "Spring Time", nameFr: "Bâtons sauteurs", nameDe: "Pogo Go Go", type: "1v1" },
+      { name: "Timber Topple", nameFr: "Les bûcherons", nameDe: "Fäll-Duell", type: "1v1" },
+      { name: "Delivery Duel", nameFr: "Duel à deux roues", nameDe: "Pizza Flitzer", type: "1v1" },
+      { name: "Poppin' Pilots", nameFr: "Raid en biplan", nameDe: "Ballonjagd", type: "1v1" },
+      { name: "Fruit Focus", nameFr: "Mémoire des fruits", nameDe: "Obst-Memory", type: "1v1" },
+      { name: "Splash Bash", nameFr: "Le pendule", nameDe: "Pendelball", type: "1v3" },
+      { name: "Lumber Whacks", nameFr: "Ceinture noire", nameDe: "Holzscheit-Fight", type: "1v3" },
+      { name: "Poserobics", nameFr: "La bonne pose", nameDe: "Poserobic", type: "1v3" },
+      { name: "Flying Fruit", nameFr: "Comptez les fruits", nameDe: "Obstaufsicht", type: "1v3" },
     ];
 
     const SEQUENCE = [
@@ -552,9 +558,9 @@
     // ========== I18N ==========
     const I18N = {
       fr: {
-        pageTitle: "Wii Party – MiniGame Tracker Solo Expert",
+        pageTitle: "Wii Party – Tracker de Mini-jeux Solo Expert",
         tabTracker: "Tracker",
-        tabTimes: "Best Times",
+        tabTimes: "Meilleur Temps",
         nextType: "Prochain type prévu :",
         btnRetour: "Retour",
         btnRetourTitle: "Annuler le dernier mini-jeu sélectionné",
@@ -564,8 +570,8 @@
         sortTimeDesc: "Meilleur temps ↓",
         sortTimeAscFull: "Meilleur temps ↑ (plus rapide)",
         sortTimeDescFull: "Meilleur temps ↓ (plus lent)",
-        sortSpeedAsc: "Vitesse ↑ (lent → rapide)",
-        sortSpeedDesc: "Vitesse ↓ (rapide → lent)",
+        sortSpeedAsc: "Vitesse (lent → rapide)",
+        sortSpeedDesc: "Vitesse (rapide → lent)",
         sortType: "Par type",
         orderTitle: "Ordre d’apparition",
         sob: "Sum Of Best :",
@@ -614,8 +620,8 @@
         sortTimeDesc: "Best time ↓",
         sortTimeAscFull: "Best time ↑ (fastest)",
         sortTimeDescFull: "Best time ↓ (slowest)",
-        sortSpeedAsc: "Speed ↑ (slow → fast)",
-        sortSpeedDesc: "Speed ↓ (fast → slow)",
+        sortSpeedAsc: "Speed (slow → fast)",
+        sortSpeedDesc: "Speed (fast → slow)",
         sortType: "By type",
         orderTitle: "Appearance order",
         sob: "Sum Of Best:",
@@ -635,8 +641,8 @@
         resetConfirm: "Reset the appearance order? (times and speeds are kept)",
         exportOk: "List copied to clipboard!",
         cumul: "Total:",
-        langLabel: "English",
-        langFlag: "🇺🇸 / 🇬🇧",
+        langLabel: "English (US)",
+        langFlag: "🇺🇸",
         probaTitle: "Probability of a run (first 25)",
         desiredLabel: "Desired minigames (speeds):",
         helpSummary: "How is the probability calculated and how to use this tool?",
@@ -650,6 +656,61 @@
         runDone: "Run finished (25+)",
         nonDesiredAppeared: "A non-desired minigame has already appeared.",
         notEnough: (t, d, n) => `Not enough remaining desired ${t} (${d} < ${n}).`,
+      },
+      // English UK : mêmes textes que US, labels de langue différents
+      "en-uk": {
+        langLabel: "English (UK)",
+        langFlag: "🇬🇧",
+      },
+      de: {
+        pageTitle: "Wii Party – MiniGame Tracker Solo Expert",
+        tabTracker: "Tracker",
+        tabTimes: "Best Times",
+        nextType: "Nächster erwarteter Typ:",
+        btnRetour: "Zurück",
+        btnRetourTitle: "Letztes Minispiel rückgängig machen",
+        searchPlaceholder: "Minispiel suchen…",
+        sortAlpha: "Alphabetisch",
+        sortTimeAsc: "Beste Zeit ↑",
+        sortTimeDesc: "Beste Zeit ↓",
+        sortTimeAscFull: "Beste Zeit ↑ (schnellste)",
+        sortTimeDescFull: "Beste Zeit ↓ (langsamste)",
+        sortSpeedAsc: "Geschwindigkeit (langsam → schnell)",
+        sortSpeedDesc: "Geschwindigkeit (schnell → langsam)",
+        sortType: "Nach Typ",
+        orderTitle: "Erscheinungsreihenfolge",
+        sob: "Sum Of Best:",
+        btnReset: "Reihenfolge zurücksetzen",
+        btnExport: "Liste exportieren",
+        filterAll: "Alle",
+        thType: "Typ",
+        thGame: "Minispiel",
+        thTime: "Beste Zeit",
+        thSpeed: "Geschwindigkeit",
+        timesHelp: 'Empfohlenes Format: <strong>H:MM:SS.mmm</strong> (z.B. <code>0:01:23.456</code>) oder <code>M:SS.mmm</code> oder Sekunden.<br>Die Geschwindigkeit färbt die Karten im Tracker (rot = Sehr langsam → grün = Sehr schnell).',
+        done: "Fertig!",
+        noMore: "Alle Minispiele der Sequenz wurden gespielt.",
+        noResult: "Keine Ergebnisse für diese Suche.",
+        noMoreType: (t) => `Keine weiteren ${t}-Minispiele verfügbar (alle bereits markiert).`,
+        wrongType: (got, expected) => `Dieses Minispiel ist vom Typ ${got}, als nächstes erwartet: ${expected}.`,
+        resetConfirm: "Erscheinungsreihenfolge zurücksetzen? (Zeiten und Geschwindigkeiten bleiben erhalten)",
+        exportOk: "Liste in die Zwischenablage kopiert!",
+        cumul: "Gesamt:",
+        langLabel: "Deutsch",
+        langFlag: "🇩🇪",
+        probaTitle: "Wahrscheinlichkeit eines Runs (erste 25)",
+        desiredLabel: "Gewünschte Minispiele (Geschwindigkeiten):",
+        helpSummary: "Wie wird die Wahrscheinlichkeit berechnet und wie nutze ich dieses Tool?",
+        helpText: `Wir betrachten die <strong>ersten 25</strong> Stages (oder was noch übrig ist).<br><br>
+          Für jeden Typ (4v4 / 1v1 / 1v3) vergleichen wir die Anzahl der verbleibenden Slots dieses Typs mit der Anzahl der verbleibenden <em>gewünschten</em> Minispiele dieses Typs.<br><br>
+          • Wenn nicht genug gewünschte für einen Typ übrig sind → <strong>0 %</strong><br>
+          • Ansonsten ist die Wahrscheinlichkeit das Produkt der Verhältnisse je Typ:<br>
+          &nbsp;&nbsp;<code>P(gewünscht, Slots) / P(gesamt, Slots)</code><br><br>
+          Wenn ein nicht gewünschtes Minispiel im Run erscheint, fällt die Wahrscheinlichkeit sofort auf 0 %.<br><br>
+          Weise jedem Minispiel eine Geschwindigkeit zu (Sehr langsam bis Sehr schnell) und aktiviere die Geschwindigkeiten, die für deine Runs akzeptabel sind.`,
+        runDone: "Run beendet (25+)",
+        nonDesiredAppeared: "Ein nicht gewünschtes Minispiel ist bereits erschienen.",
+        notEnough: (t, d, n) => `Nicht genug verbleibende gewünschte ${t} (${d} < ${n}).`,
       }
     };
 
@@ -667,18 +728,32 @@
     let currentSearch = "";
 
     function t(key, ...args) {
-      const val = I18N[lang][key];
+      // en-uk réutilise les textes EN (US), sauf labels de langue
+      const pack = I18N[lang] || I18N.en;
+      const val = pack[key] !== undefined ? pack[key] : I18N.en[key];
       return typeof val === "function" ? val(...args) : val;
     }
 
     function displayName(g) {
-      return lang === "fr" ? g.nameFr : g.name;
+      if (lang === "fr") return g.nameFr;
+      if (lang === "de") return g.nameDe || g.name;
+      if (lang === "en-uk" && g.nameUk) return g.nameUk;
+      return g.name; // English US (et UK pour les noms identiques)
     }
 
     function matchesSearch(g, q) {
       if (!q) return true;
       const ql = q.toLowerCase();
-      return g.name.toLowerCase().includes(ql) || g.nameFr.toLowerCase().includes(ql);
+      return g.name.toLowerCase().includes(ql)
+        || (g.nameFr && g.nameFr.toLowerCase().includes(ql))
+        || (g.nameUk && g.nameUk.toLowerCase().includes(ql))
+        || (g.nameDe && g.nameDe.toLowerCase().includes(ql));
+    }
+
+    function sortLocale() {
+      if (lang === "fr") return "fr";
+      if (lang === "de") return "de";
+      return "en";
     }
 
     function getType(name) {
@@ -807,7 +882,8 @@
       if (n >= 1e9) {
         return n.toExponential(4).replace("e+", "E+").replace("e-", "E-");
       }
-      return n.toLocaleString(lang === "fr" ? "fr-FR" : "en-US");
+      const numLoc = lang === "fr" ? "fr-FR" : (lang === "de" ? "de-DE" : "en-US");
+      return n.toLocaleString(numLoc);
     }
 
     function renderProba() {
@@ -919,12 +995,12 @@
 
       candidates.sort((a, b) => {
         if (trackerSort === "alpha") {
-          return displayName(a).localeCompare(displayName(b), lang === "fr" ? "fr" : "en");
+          return displayName(a).localeCompare(displayName(b), sortLocale());
         }
         if (trackerSort === "speed-asc" || trackerSort === "speed-desc") {
           const ra = speedRank(a.name), rb = speedRank(b.name);
           // Sans vitesse → à la fin
-          if (ra === 0 && rb === 0) return displayName(a).localeCompare(displayName(b), lang === "fr" ? "fr" : "en");
+          if (ra === 0 && rb === 0) return displayName(a).localeCompare(displayName(b), sortLocale());
           if (ra === 0) return 1;
           if (rb === 0) return -1;
           return trackerSort === "speed-asc" ? ra - rb : rb - ra;
@@ -933,7 +1009,7 @@
         const hasA = ta != null, hasB = tb != null;
         if (hasA && !hasB) return -1;
         if (!hasA && hasB) return 1;
-        if (!hasA && !hasB) return displayName(a).localeCompare(displayName(b), lang === "fr" ? "fr" : "en");
+        if (!hasA && !hasB) return displayName(a).localeCompare(displayName(b), sortLocale());
         return trackerSort === "time-asc" ? ta - tb : tb - ta;
       });
 
@@ -1036,11 +1112,11 @@
       list.sort((a, b) => {
         if (currentSort === "alpha" || currentSort === "type") {
           if (currentSort === "type" && a.type !== b.type) return a.type.localeCompare(b.type);
-          return displayName(a).localeCompare(displayName(b), lang === "fr" ? "fr" : "en");
+          return displayName(a).localeCompare(displayName(b), sortLocale());
         }
         if (currentSort === "speed-asc" || currentSort === "speed-desc") {
           const ra = speedRank(a.name), rb = speedRank(b.name);
-          if (ra === 0 && rb === 0) return displayName(a).localeCompare(displayName(b), lang === "fr" ? "fr" : "en");
+          if (ra === 0 && rb === 0) return displayName(a).localeCompare(displayName(b), sortLocale());
           if (ra === 0) return 1;
           if (rb === 0) return -1;
           return currentSort === "speed-asc" ? ra - rb : rb - ra;
@@ -1049,7 +1125,7 @@
         const hasA = ta != null, hasB = tb != null;
         if (hasA && !hasB) return -1;
         if (!hasA && hasB) return 1;
-        if (!hasA && !hasB) return displayName(a).localeCompare(displayName(b), lang === "fr" ? "fr" : "en");
+        if (!hasA && !hasB) return displayName(a).localeCompare(displayName(b), sortLocale());
         return currentSort === "time-asc" ? ta - tb : tb - ta;
       });
 
