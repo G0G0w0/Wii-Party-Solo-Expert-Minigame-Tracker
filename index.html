@@ -386,6 +386,9 @@
         <button class="lang-option" data-lang="de" role="option">
           <span>🇩🇪</span> Deutsch
         </button>
+        <button class="lang-option" data-lang="es" role="option">
+          <span>🇪🇸</span> Español
+        </button>
       </div>
     </div>
   </div>
@@ -413,6 +416,10 @@
         <option value="speed-asc">Vitesse ↑ (lent → rapide)</option>
         <option value="speed-desc">Vitesse ↓ (rapide → lent)</option>
       </select>
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.9rem;user-select:none;">
+        <input type="checkbox" id="toggle-speed-colors" checked>
+        <span id="label-speed-colors">Couleurs de vitesse</span>
+      </label>
     </div>
 
     <div class="grid" id="grid"></div>
@@ -437,11 +444,11 @@
 
         <div class="speed-filters" id="speed-filters">
           <strong id="label-desired" style="margin-bottom:4px;">Mini-jeux désirés (vitesses) :</strong>
-          <label><input type="checkbox" value="tres-lent" checked> <span data-i18n-speed="tres-lent">Très Lent</span></label>
-          <label><input type="checkbox" value="lent" checked> <span data-i18n-speed="lent">Lent</span></label>
-          <label><input type="checkbox" value="moyen" checked> <span data-i18n-speed="moyen">Moyen</span></label>
-          <label><input type="checkbox" value="rapide" checked> <span data-i18n-speed="rapide">Rapide</span></label>
-          <label><input type="checkbox" value="tres-rapide" checked> <span data-i18n-speed="tres-rapide">Très Rapide</span></label>
+          <label><input type="checkbox" value="tres-lent" checked> <span data-i18n-speed="tres-lent">Très Lent</span> <span class="speed-count" data-speed-count="tres-lent" style="color:var(--muted);font-size:0.85em;"></span></label>
+          <label><input type="checkbox" value="lent" checked> <span data-i18n-speed="lent">Lent</span> <span class="speed-count" data-speed-count="lent" style="color:var(--muted);font-size:0.85em;"></span></label>
+          <label><input type="checkbox" value="moyen" checked> <span data-i18n-speed="moyen">Moyen</span> <span class="speed-count" data-speed-count="moyen" style="color:var(--muted);font-size:0.85em;"></span></label>
+          <label><input type="checkbox" value="rapide" checked> <span data-i18n-speed="rapide">Rapide</span> <span class="speed-count" data-speed-count="rapide" style="color:var(--muted);font-size:0.85em;"></span></label>
+          <label><input type="checkbox" value="tres-rapide" checked> <span data-i18n-speed="tres-rapide">Très Rapide</span> <span class="speed-count" data-speed-count="tres-rapide" style="color:var(--muted);font-size:0.85em;"></span></label>
         </div>
 
         <details class="help-box">
@@ -486,56 +493,56 @@
   <script>
     // ========== DONNÉES ==========
     const GAMES = [
-      { name: "Barrel Daredevil", nameFr: "Arrêt calculé", nameDe: "Fass fällt", type: "4v4" },
-      { name: "Chin-Up Champ", nameFr: "Tractions en folie", nameDe: "Klimmzug-Champion", type: "4v4" },
-      { name: "Chop Chops", nameFr: "A vos couteaux !", nameDe: "Küchenmeister", type: "4v4" },
-      { name: "Flag Fracas", nameFr: "Course au drapeau", nameDe: "Strandsprint", type: "4v4" },
-      { name: "Friendly Face-Off", nameFr: "Casse-tête de Mii", nameDe: "Portrait-Puzzle", type: "4v4" },
-      { name: "Jumbo Jump", nameFr: "Saut à ski", nameDe: "Skispringen", type: "4v4" },
-      { name: "Saucer Snap", nameFr: "Photo d’ovni", nameDe: "Foto-Reflex", type: "4v4" },
-      { name: "Smile Snap", nameFr: "Souriez !", nameDe: "Cheeeese", type: "4v4" },
-      { name: "Stop Watchers", nameFr: "Chrono parfait", nameDe: "Innere Uhr", type: "4v4" },
-      { name: "Tropical Punch", nameFr: "Mise au poing", nameDe: "Fliegende Fäuste", type: "4v4" },
-      { name: "Crash Balls", nameFr: "Mii en boule", nameUk: "Ball Brawl", nameDe: "Kollisionskurs", type: "4v4" },
-      { name: "Moon Landing", nameFr: "Alunissage", nameUk: "Lunar Landers", nameDe: "Moonlandung", type: "4v4" },
-      { name: "Ram Jam", nameFr: "Voie moutonneuse", nameDe: "Schafstau", type: "4v4" },
-      { name: "Zombie Tag", nameFr: "Zombies !", nameDe: "Friedhof-Flucht", type: "4v4" },
-      { name: "Cosmic Capers", nameFr: "Course spatiale", nameUk: "Space Race", nameDe: "Weltraumrennen", type: "4v4" },
-      { name: "Cry Babies", nameFr: "Fais risette !", nameDe: "Wettwiegen", type: "4v4" },
-      { name: "Feathered Frenzy", nameFr: "Pluie de plumes", nameDe: "Federn Fangen", type: "4v4" },
-      { name: "Hammer Heads", nameFr: "Paf la taupe !", nameDe: "Maulwurf-Klopfen", type: "4v4" },
-      { name: "Maze Daze", nameFr: "Labyrinthe tournis", nameDe: "Torkel-Labyrinth", type: "4v4" },
-      { name: "Pearl Plunder", nameFr: "Perles océanes", nameDe: "Perlen plündern", type: "4v4" },
-      { name: "Popgun Posse", nameFr: "Tireurs de l’Ouest", nameDe: "Büchsenschützen", type: "4v4" },
-      { name: "Puzzle Pick-Up", nameFr: "Demi-puzzles", nameDe: "Puzzle-Gewusel", type: "4v4" },
-      { name: "Quicker Chipper", nameFr: "Swing parfait", nameDe: "Tempo-Golf", type: "4v4" },
-      { name: "Shifty Gifts", nameFr: "Pluie de cadeaux", nameDe: "Paket-Panik", type: "4v4" },
-      { name: "Space Brawl", nameFr: "Bataille spatiale", nameDe: "Showdown im All", type: "4v4" },
-      { name: "Spotlight Fight", nameFr: "Stars du disco", nameDe: "Im Rampenlicht", type: "4v4" },
-      { name: "Back Attack", nameFr: "Tir sur rails", nameDe: "Toter Winkel", type: "4v4" },
-      { name: "Chopper Hoppers", nameFr: "Hélicoptères !", nameDe: "Rettungshelikopter", type: "4v4" },
-      { name: "Derby Dash", nameFr: "Course hippique", nameDe: "Top Galopp", type: "4v4" },
-      { name: "Flap Hurdles", nameFr: "Saut d’obstacles", nameUk: "Hurdle Hover", nameDe: "Hürden-Hopsen", type: "4v4" },
-      { name: "Goal Getters", nameFr: "Tirs au but", nameDe: "Torschusstraining", type: "4v4" },
-      { name: "Shutterpup", nameFr: "Photos de chiot", nameDe: "Park-Paparazzi", type: "4v4" },
-      { name: "Walk-Off", nameFr: "Distance parfaite", nameDe: "Langläufer", type: "4v4" },
-      { name: "Balloon Buggies", nameFr: "Buggy bombe", nameDe: "Ballon-Buggys", type: "4v4" },
-      { name: "Face Flip", nameFr: "Mii à la carte", nameDe: "Mii à la carte", type: "4v4" },
-      { name: "Follow Your Face", nameFr: "Mii en gobelets", nameDe: "Hütchenspiel", type: "4v4" },
-      { name: "Rope Sling", nameFr: "Saut de liane", nameUk: "Lofty Leap", nameDe: "Lianenweitsprung", type: "4v4" },
-      { name: "Channel Changers", nameFr: "Zappez !", nameDe: "Kanal-Wahl", type: "1v1" },
-      { name: "Jangle Wranglers", nameFr: "Cloche-moutons", nameUk: "Shepherd Scramble", nameDe: "Wetthüten", type: "1v1" },
-      { name: "Pop-Up Bandits", nameFr: "Gâchette facile", nameDe: "Pappbanditen", type: "1v1" },
-      { name: "Roll to the Goal", nameFr: "Labyrinthe rotatif", nameDe: "Murmel-Labyrinth", type: "1v1" },
-      { name: "Spring Time", nameFr: "Bâtons sauteurs", nameDe: "Pogo Go Go", type: "1v1" },
-      { name: "Timber Topple", nameFr: "Les bûcherons", nameDe: "Fäll-Duell", type: "1v1" },
-      { name: "Delivery Duel", nameFr: "Duel à deux roues", nameDe: "Pizza Flitzer", type: "1v1" },
-      { name: "Poppin' Pilots", nameFr: "Raid en biplan", nameDe: "Ballonjagd", type: "1v1" },
-      { name: "Fruit Focus", nameFr: "Mémoire des fruits", nameDe: "Obst-Memory", type: "1v1" },
-      { name: "Splash Bash", nameFr: "Le pendule", nameDe: "Pendelball", type: "1v3" },
-      { name: "Lumber Whacks", nameFr: "Ceinture noire", nameDe: "Holzscheit-Fight", type: "1v3" },
-      { name: "Poserobics", nameFr: "La bonne pose", nameDe: "Poserobic", type: "1v3" },
-      { name: "Flying Fruit", nameFr: "Comptez les fruits", nameDe: "Obstaufsicht", type: "1v3" },
+      { name: "Barrel Daredevil", nameFr: "Arrêt calculé", nameDe: "Fass fällt", nameEs: "Por los pelos", type: "4v4" },
+      { name: "Chin-Up Champ", nameFr: "Tractions en folie", nameDe: "Klimmzug-Champion", nameEs: "Domina las dominadas", type: "4v4" },
+      { name: "Chop Chops", nameFr: "A vos couteaux !", nameDe: "Küchenmeister", nameEs: "Pica y trocea", type: "4v4" },
+      { name: "Flag Fracas", nameFr: "Course au drapeau", nameDe: "Strandsprint", nameEs: "¡A por la bandera!", type: "4v4" },
+      { name: "Friendly Face-Off", nameFr: "Casse-tête de Mii", nameDe: "Portrait-Puzzle", nameEs: "Mii puzle", type: "4v4" },
+      { name: "Jumbo Jump", nameFr: "Saut à ski", nameDe: "Skispringen", nameEs: "Salto de esquí", type: "4v4" },
+      { name: "Saucer Snap", nameFr: "Photo d’ovni", nameDe: "Foto-Reflex", nameEs: "¡Ovni a la vista!", type: "4v4" },
+      { name: "Smile Snap", nameFr: "Souriez !", nameDe: "Cheeeese", nameEs: "¡Decid patata!", type: "4v4" },
+      { name: "Stop Watchers", nameFr: "Chrono parfait", nameDe: "Innere Uhr", nameEs: "Cronómetro mental", type: "4v4" },
+      { name: "Tropical Punch", nameFr: "Mise au poing", nameDe: "Fliegende Fäuste", nameEs: "¡Puños fuera!", type: "4v4" },
+      { name: "Crash Balls", nameFr: "Mii en boule", nameUk: "Ball Brawl", nameDe: "Kollisionskurs", nameEs: "Bolas de choque", type: "4v4" },
+      { name: "Moon Landing", nameFr: "Alunissage", nameUk: "Lunar Landers", nameDe: "Moonlandung", nameEs: "Cinturón de asteroides", type: "4v4" },
+      { name: "Ram Jam", nameFr: "Voie moutonneuse", nameDe: "Schafstau", nameEs: "Carrera rural", type: "4v4" },
+      { name: "Zombie Tag", nameFr: "Zombies !", nameDe: "Friedhof-Flucht", nameEs: "Terror zombi", type: "4v4" },
+      { name: "Cosmic Capers", nameFr: "Course spatiale", nameUk: "Space Race", nameDe: "Weltraumrennen", nameEs: "Carrera galáctica", type: "4v4" },
+      { name: "Cry Babies", nameFr: "Fais risette !", nameDe: "Wettwiegen", nameEs: "Bebés Ilorones", type: "4v4" },
+      { name: "Feathered Frenzy", nameFr: "Pluie de plumes", nameDe: "Federn Fangen", nameEs: "Lluvia de plumas", type: "4v4" },
+      { name: "Hammer Heads", nameFr: "Paf la taupe !", nameDe: "Maulwurf-Klopfen", nameEs: "Tópate el topo", type: "4v4" },
+      { name: "Maze Daze", nameFr: "Labyrinthe tournis", nameDe: "Torkel-Labyrinth", nameEs: "Laberinto mareante", type: "4v4" },
+      { name: "Pearl Plunder", nameFr: "Perles océanes", nameDe: "Perlen plündern", nameEs: "Como pez en al agua", type: "4v4" },
+      { name: "Popgun Posse", nameFr: "Tireurs de l’Ouest", nameDe: "Büchsenschützen", nameEs: "Tiro a la lata", type: "4v4" },
+      { name: "Puzzle Pick-Up", nameFr: "Demi-puzzles", nameDe: "Puzzle-Gewusel", nameEs: "La pieza correcta", type: "4v4" },
+      { name: "Quicker Chipper", nameFr: "Swing parfait", nameDe: "Tempo-Golf", nameEs: "El swing perfecto", type: "4v4" },
+      { name: "Shifty Gifts", nameFr: "Pluie de cadeaux", nameDe: "Paket-Panik", nameEs: "Montaña de regalos", type: "4v4" },
+      { name: "Space Brawl", nameFr: "Bataille spatiale", nameDe: "Showdown im All", nameEs: "Guerra cósmica", type: "4v4" },
+      { name: "Spotlight Fight", nameFr: "Stars du disco", nameDe: "Im Rampenlicht", nameEs: "La estrella de la pista", type: "4v4" },
+      { name: "Back Attack", nameFr: "Tir sur rails", nameDe: "Toter Winkel", nameEs: "Ataque sobre raíles", type: "4v4" },
+      { name: "Chopper Hoppers", nameFr: "Hélicoptères !", nameDe: "Rettungshelikopter", nameEs: "Helicóptero al rescate", type: "4v4" },
+      { name: "Derby Dash", nameFr: "Course hippique", nameDe: "Top Galopp", nameEs: "Al galope", type: "4v4" },
+      { name: "Flap Hurdles", nameFr: "Saut d’obstacles", nameUk: "Hurdle Hover", nameDe: "Hürden-Hopsen", nameEs: "Obstáculos rodantes", type: "4v4" },
+      { name: "Goal Getters", nameFr: "Tirs au but", nameDe: "Torschusstraining", nameEs: "Remates de volea", type: "4v4" },
+      { name: "Shutterpup", nameFr: "Photos de chiot", nameDe: "Park-Paparazzi", nameEs: "Fotos perrunas", type: "4v4" },
+      { name: "Walk-Off", nameFr: "Distance parfaite", nameDe: "Langläufer", nameEs: "La distancia justa", type: "4v4" },
+      { name: "Balloon Buggies", nameFr: "Buggy bombe", nameDe: "Ballon-Buggys", nameEs: "Rodeo al volante", type: "4v4" },
+      { name: "Face Flip", nameFr: "Mii à la carte", nameDe: "Mii à la carte", nameEs: "Mii a la carta", type: "4v4" },
+      { name: "Follow Your Face", nameFr: "Mii en gobelets", nameDe: "Hütchenspiel", nameEs: "Mii trilero", type: "4v4" },
+      { name: "Rope Sling", nameFr: "Saut de liane", nameUk: "Lofty Leap", nameDe: "Lianenweitsprung", nameEs: "Saltos selváticos", type: "4v4" },
+      { name: "Channel Changers", nameFr: "Zappez !", nameDe: "Kanal-Wahl", nameEs: "Sintonízate", type: "1v1" },
+      { name: "Jangle Wranglers", nameFr: "Cloche-moutons", nameUk: "Shepherd Scramble", nameDe: "Wetthüten", nameEs: "De vuelta al redil", type: "1v1" },
+      { name: "Pop-Up Bandits", nameFr: "Gâchette facile", nameDe: "Pappbanditen", nameEs: "Tiradores de élite", type: "1v1" },
+      { name: "Roll to the Goal", nameFr: "Labyrinthe rotatif", nameDe: "Murmel-Labyrinth", nameEs: "Laberinto inclinable", type: "1v1" },
+      { name: "Spring Time", nameFr: "Bâtons sauteurs", nameDe: "Pogo Go Go", nameEs: "Bote a bote", type: "1v1" },
+      { name: "Timber Topple", nameFr: "Les bûcherons", nameDe: "Fäll-Duell", nameEs: "¡Árbol va!", type: "1v1" },
+      { name: "Delivery Duel", nameFr: "Duel à deux roues", nameDe: "Pizza Flitzer", nameEs: "Pizza a domicilio", type: "1v1" },
+      { name: "Poppin' Pilots", nameFr: "Raid en biplan", nameDe: "Ballonjagd", nameEs: "Ases del aire", type: "1v1" },
+      { name: "Fruit Focus", nameFr: "Mémoire des fruits", nameDe: "Obst-Memory", nameEs: "Memoria frutal", type: "1v1" },
+      { name: "Splash Bash", nameFr: "Le pendule", nameDe: "Pendelball", nameEs: "Tensión en la piscina", type: "1v3" },
+      { name: "Lumber Whacks", nameFr: "Ceinture noire", nameDe: "Holzscheit-Fight", nameEs: "Pequeño saltamontes", type: "1v3" },
+      { name: "Poserobics", nameFr: "La bonne pose", nameDe: "Poserobic", nameEs: "Clase de aeróbic", type: "1v3" },
+      { name: "Flying Fruit", nameFr: "Comptez les fruits", nameDe: "Obstaufsicht", nameEs: "Frutas voladoras", type: "1v3" },
     ];
 
     const SEQUENCE = [
@@ -547,12 +554,12 @@
     ];
 
     const SPEED_OPTIONS = [
-      { value: "", labelFr: "—", labelEn: "—" },
-      { value: "tres-lent", labelFr: "Très Lent", labelEn: "Very Slow" },
-      { value: "lent", labelFr: "Lent", labelEn: "Slow" },
-      { value: "moyen", labelFr: "Moyen", labelEn: "Medium" },
-      { value: "rapide", labelFr: "Rapide", labelEn: "Fast" },
-      { value: "tres-rapide", labelFr: "Très Rapide", labelEn: "Very Fast" },
+      { value: "", labelFr: "—", labelEn: "—", labelDe: "—", labelEs: "—" },
+      { value: "tres-lent", labelFr: "Très Lent", labelEn: "Very Slow", labelDe: "Sehr langsam", labelEs: "Muy lento" },
+      { value: "lent", labelFr: "Lent", labelEn: "Slow", labelDe: "Langsam", labelEs: "Lento" },
+      { value: "moyen", labelFr: "Moyen", labelEn: "Medium", labelDe: "Mittel", labelEs: "Medio" },
+      { value: "rapide", labelFr: "Rapide", labelEn: "Fast", labelDe: "Schnell", labelEs: "Rápido" },
+      { value: "tres-rapide", labelFr: "Très Rapide", labelEn: "Very Fast", labelDe: "Sehr schnell", labelEs: "Muy rápido" },
     ];
 
     // ========== I18N ==========
@@ -565,6 +572,7 @@
         btnRetour: "Retour",
         btnRetourTitle: "Annuler le dernier mini-jeu sélectionné",
         searchPlaceholder: "Rechercher un mini-jeu…",
+        colorSpeeds: "Couleurs de vitesse",
         sortAlpha: "Tri alphabétique",
         sortTimeAsc: "Meilleur temps ↑",
         sortTimeDesc: "Meilleur temps ↓",
@@ -590,7 +598,7 @@
         wrongType: (got, expected) => `Ce mini-jeu est de type ${got}, le prochain attendu est ${expected}.`,
         resetConfirm: "Réinitialiser l’ordre d’apparition ? (temps et vitesses conservés)",
         exportOk: "Liste copiée dans le presse-papier !",
-        cumul: "Cumul :",
+        cumul: "SOB :",
         langLabel: "Français",
         langFlag: "🇫🇷",
         probaTitle: "Probabilité d'une run (25 premiers)",
@@ -606,6 +614,7 @@
         runDone: "Run terminée (25+)",
         nonDesiredAppeared: "Un mini-jeu non désiré est déjà apparu.",
         notEnough: (t, d, n) => `Pas assez de ${t} désirés restants (${d} < ${n}).`,
+        leftLabel: "restants",
       },
       en: {
         pageTitle: "Wii Party – Solo Expert MiniGame Tracker",
@@ -615,6 +624,7 @@
         btnRetour: "Undo",
         btnRetourTitle: "Undo last selected minigame",
         searchPlaceholder: "Search a minigame…",
+        colorSpeeds: "Speed colors",
         sortAlpha: "Alphabetical",
         sortTimeAsc: "Best time ↑",
         sortTimeDesc: "Best time ↓",
@@ -640,7 +650,7 @@
         wrongType: (got, expected) => `This minigame is type ${got}, next expected is ${expected}.`,
         resetConfirm: "Reset the appearance order? (times and speeds are kept)",
         exportOk: "List copied to clipboard!",
-        cumul: "Total:",
+        cumul: "SOB:",
         langLabel: "English (US)",
         langFlag: "🇺🇸",
         probaTitle: "Probability of a run (first 25)",
@@ -656,6 +666,7 @@
         runDone: "Run finished (25+)",
         nonDesiredAppeared: "A non-desired minigame has already appeared.",
         notEnough: (t, d, n) => `Not enough remaining desired ${t} (${d} < ${n}).`,
+        leftLabel: "left",
       },
       // English UK : mêmes textes que US, labels de langue différents
       "en-uk": {
@@ -670,6 +681,7 @@
         btnRetour: "Zurück",
         btnRetourTitle: "Letztes Minispiel rückgängig machen",
         searchPlaceholder: "Minispiel suchen…",
+        colorSpeeds: "Geschwindigkeitsfarben",
         sortAlpha: "Alphabetisch",
         sortTimeAsc: "Beste Zeit ↑",
         sortTimeDesc: "Beste Zeit ↓",
@@ -695,7 +707,7 @@
         wrongType: (got, expected) => `Dieses Minispiel ist vom Typ ${got}, als nächstes erwartet: ${expected}.`,
         resetConfirm: "Erscheinungsreihenfolge zurücksetzen? (Zeiten und Geschwindigkeiten bleiben erhalten)",
         exportOk: "Liste in die Zwischenablage kopiert!",
-        cumul: "Gesamt:",
+        cumul: "SOB:",
         langLabel: "Deutsch",
         langFlag: "🇩🇪",
         probaTitle: "Wahrscheinlichkeit eines Runs (erste 25)",
@@ -711,6 +723,59 @@
         runDone: "Run beendet (25+)",
         nonDesiredAppeared: "Ein nicht gewünschtes Minispiel ist bereits erschienen.",
         notEnough: (t, d, n) => `Nicht genug verbleibende gewünschte ${t} (${d} < ${n}).`,
+        leftLabel: "übrig",
+      },
+      es: {
+        pageTitle: "Wii Party – Tracker de Minijuegos Solo Expert",
+        tabTracker: "Tracker",
+        tabTimes: "Best Times",
+        nextType: "Siguiente tipo previsto:",
+        btnRetour: "Deshacer",
+        btnRetourTitle: "Deshacer el último minijuego seleccionado",
+        searchPlaceholder: "Buscar un minijuego…",
+        colorSpeeds: "Colores de velocidad",
+        sortAlpha: "Alfabético",
+        sortTimeAsc: "Mejor tiempo ↑",
+        sortTimeDesc: "Mejor tiempo ↓",
+        sortTimeAscFull: "Mejor tiempo ↑ (más rápido)",
+        sortTimeDescFull: "Mejor tiempo ↓ (más lento)",
+        sortSpeedAsc: "Velocidad ↑ (lento → rápido)",
+        sortSpeedDesc: "Velocidad ↓ (rápido → lento)",
+        sortType: "Por tipo",
+        orderTitle: "Orden de aparición",
+        sob: "Sum Of Best:",
+        btnReset: "Reiniciar el orden",
+        btnExport: "Exportar la lista",
+        filterAll: "Todos",
+        thType: "Tipo",
+        thGame: "Minijuego",
+        thTime: "Mejor tiempo",
+        thSpeed: "Velocidad",
+        timesHelp: 'Formato recomendado: <strong>H:MM:SS.mmm</strong> (ej. <code>0:01:23.456</code>) o <code>M:SS.mmm</code> o segundos.<br>La velocidad colorea las tarjetas del Tracker (rojo = Muy lento → verde = Muy rápido).',
+        done: "¡Terminado!",
+        noMore: "Todos los minijuegos de la secuencia han aparecido.",
+        noResult: "Ningún resultado para esta búsqueda.",
+        noMoreType: (t) => `No quedan minijuegos ${t} disponibles (todos ya marcados).`,
+        wrongType: (got, expected) => `Este minijuego es de tipo ${got}, el siguiente esperado es ${expected}.`,
+        resetConfirm: "¿Reiniciar el orden de aparición? (se conservan tiempos y velocidades)",
+        exportOk: "¡Lista copiada al portapapeles!",
+        cumul: "SOB:",
+        langLabel: "Español",
+        langFlag: "🇪🇸",
+        probaTitle: "Probabilidad de una run (primeros 25)",
+        desiredLabel: "Minijuegos deseados (velocidades):",
+        helpSummary: "¿Cómo se calcula la probabilidad y cómo usar esta herramienta?",
+        helpText: `Miramos las <strong>primeras 25</strong> etapas (o las que queden).<br><br>
+          Para cada tipo (4v4 / 1v1 / 1v3) comparamos el número de casillas restantes de ese tipo con el número de minijuegos <em>deseados</em> restantes de ese tipo.<br><br>
+          • Si no hay suficientes deseados de un tipo → <strong>0 %</strong><br>
+          • Si no, la probabilidad es el producto de las razones por tipo:<br>
+          &nbsp;&nbsp;<code>P(deseados, casillas) / P(total, casillas)</code><br><br>
+          Si aparece un minijuego no deseado en la run, la probabilidad pasa a 0 %.<br><br>
+          Asigna una velocidad a cada minijuego y marca las velocidades aceptables para tus runs.`,
+        runDone: "Run terminada (25+)",
+        nonDesiredAppeared: "Ya ha aparecido un minijuego no deseado.",
+        notEnough: (t, d, n) => `No quedan suficientes ${t} deseados (${d} < ${n}).`,
+        leftLabel: "restantes",
       }
     };
 
@@ -723,6 +788,7 @@
 
     let trackerSearch = "";
     let trackerSort = "alpha";
+    let showSpeedColors = localStorage.getItem("wiiPartyShowSpeedColors") !== "false";
     let currentFilter = "all";
     let currentSort = "alpha";
     let currentSearch = "";
@@ -737,6 +803,7 @@
     function displayName(g) {
       if (lang === "fr") return g.nameFr;
       if (lang === "de") return g.nameDe || g.name;
+      if (lang === "es") return g.nameEs || g.name;
       if (lang === "en-uk" && g.nameUk) return g.nameUk;
       return g.name; // English US (et UK pour les noms identiques)
     }
@@ -747,13 +814,40 @@
       return g.name.toLowerCase().includes(ql)
         || (g.nameFr && g.nameFr.toLowerCase().includes(ql))
         || (g.nameUk && g.nameUk.toLowerCase().includes(ql))
+        || (g.nameEs && g.nameEs.toLowerCase().includes(ql))
         || (g.nameDe && g.nameDe.toLowerCase().includes(ql));
     }
 
     function sortLocale() {
       if (lang === "fr") return "fr";
       if (lang === "de") return "de";
+      if (lang === "es") return "es";
       return "en";
+    }
+
+    function speedLabel(opt) {
+      if (lang === "fr") return opt.labelFr;
+      if (lang === "de") return opt.labelDe || opt.labelEn;
+      if (lang === "es") return opt.labelEs || opt.labelEn;
+      return opt.labelEn;
+    }
+
+    function updateSpeedCounts() {
+      const totals = { "tres-lent": 0, "lent": 0, "moyen": 0, "rapide": 0, "tres-rapide": 0 };
+      const remaining = { "tres-lent": 0, "lent": 0, "moyen": 0, "rapide": 0, "tres-rapide": 0 };
+      GAMES.forEach(g => {
+        const sp = speeds[g.name];
+        if (!sp || !totals.hasOwnProperty(sp)) return;
+        totals[sp]++;
+        if (!order.includes(g.name)) remaining[sp]++;
+      });
+      const leftWord = t("leftLabel") || "left";
+      document.querySelectorAll("[data-speed-count]").forEach(el => {
+        const sp = el.dataset.speedCount;
+        const rem = remaining[sp] || 0;
+        const tot = totals[sp] || 0;
+        el.textContent = tot === 0 ? "" : `(${rem}/${tot} ${leftWord})`;
+      });
     }
 
     function getType(name) {
@@ -882,7 +976,7 @@
       if (n >= 1e9) {
         return n.toExponential(4).replace("e+", "E+").replace("e-", "E-");
       }
-      const numLoc = lang === "fr" ? "fr-FR" : (lang === "de" ? "de-DE" : "en-US");
+      const numLoc = lang === "fr" ? "fr-FR" : (lang === "de" ? "de-DE" : (lang === "es" ? "es-ES" : "en-US"));
       return n.toLocaleString(numLoc);
     }
 
@@ -899,6 +993,7 @@
         const totStr = formatBigNumber(res.tot);
         el.innerHTML = `<span class="fav">${favStr}</span> / ${totStr} <span class="pct">(${res.pct.toFixed(4)} %)</span>`;
       }
+      updateSpeedCounts();
     }
 
     // ========== APPLY LANGUAGE ==========
@@ -914,6 +1009,10 @@
       btnRetour.title = t("btnRetourTitle");
       document.getElementById("search-tracker").placeholder = t("searchPlaceholder");
       document.getElementById("search-times").placeholder = t("searchPlaceholder");
+      const speedColorsLabel = document.getElementById("label-speed-colors");
+      if (speedColorsLabel) speedColorsLabel.textContent = t("colorSpeeds");
+      const speedColorsCb = document.getElementById("toggle-speed-colors");
+      if (speedColorsCb) speedColorsCb.checked = showSpeedColors;
 
       const sortTracker = document.getElementById("sort-tracker");
       sortTracker.options[0].text = t("sortAlpha");
@@ -952,8 +1051,9 @@
       document.querySelectorAll("[data-i18n-speed]").forEach(el => {
         const v = el.dataset.i18nSpeed;
         const opt = SPEED_OPTIONS.find(o => o.value === v);
-        if (opt) el.textContent = lang === "fr" ? opt.labelFr : opt.labelEn;
+        if (opt) el.textContent = speedLabel(opt);
       });
+      updateSpeedCounts();
 
       document.querySelectorAll(".lang-option").forEach(opt => {
         opt.classList.toggle("active", opt.dataset.lang === lang);
@@ -1021,7 +1121,7 @@
         candidates.forEach(g => {
           const sp = speeds[g.name] || "";
           const div = document.createElement("div");
-          div.className = "game" + (sp ? " speed-" + sp : "");
+          div.className = "game" + (showSpeedColors && sp ? " speed-" + sp : "");
           div.innerHTML = `
             <img src="images/${encodeURIComponent(g.name)}.png"
                  alt="${displayName(g)}"
@@ -1134,7 +1234,7 @@
         const display = val != null ? formatTime(val) : "";
         const sp = speeds[g.name] || "";
         const opts = SPEED_OPTIONS.map(o => {
-          const lab = lang === "fr" ? o.labelFr : o.labelEn;
+          const lab = speedLabel(o);
           return `<option value="${o.value}" ${o.value === sp ? "selected" : ""}>${lab}</option>`;
         }).join("");
         return `<tr>
@@ -1214,6 +1314,11 @@
     });
     document.getElementById("sort-tracker").addEventListener("change", e => {
       trackerSort = e.target.value;
+      renderTracker();
+    });
+    document.getElementById("toggle-speed-colors").addEventListener("change", e => {
+      showSpeedColors = e.target.checked;
+      localStorage.setItem("wiiPartyShowSpeedColors", showSpeedColors ? "true" : "false");
       renderTracker();
     });
 
