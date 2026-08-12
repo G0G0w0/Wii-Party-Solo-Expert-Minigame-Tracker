@@ -246,7 +246,7 @@
     }
     .order-list li .run-sum.has { color: #ffffff; }
 
-    .btn-row { margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn-row { margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
     button {
       background: #1e293b;
       color: var(--text);
@@ -258,6 +258,48 @@
     }
     button:hover { background: #334155; }
     button.danger { border-color: #ef4444; color: #fca5a5; }
+
+    .export-wrap { position: relative; display: inline-flex; }
+    .export-wrap > button#btn-export {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      border-right: none;
+    }
+    #btn-export-menu {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      padding: 8px 10px;
+      min-width: 0;
+    }
+    .export-menu {
+      display: none;
+      position: absolute;
+      left: 0;
+      bottom: calc(100% + 4px);
+      background: var(--card);
+      border: 1px solid #334155;
+      border-radius: 8px;
+      min-width: 200px;
+      z-index: 50;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      padding: 8px 0;
+    }
+    .export-menu.open { display: block; }
+    .export-menu label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .export-menu label:hover { background: #1e293b; }
+    .speed-next-pct {
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.85em;
+      margin-left: 2px;
+    }
 
     /* Probabilité */
     #proba-section {
@@ -434,7 +476,14 @@
         <ol class="order-list" id="appeared-list"></ol>
         <div class="btn-row">
           <button onclick="resetOrder()" class="danger" id="btn-reset">Réinitialiser l’ordre</button>
-          <button onclick="exportOrder()" id="btn-export">Exporter la liste</button>
+          <div class="export-wrap">
+            <button onclick="exportOrder()" id="btn-export">Exporter la liste</button>
+            <button type="button" id="btn-export-menu" aria-haspopup="true" aria-expanded="false" title="Options d’export">▾</button>
+            <div class="export-menu" id="export-menu">
+              <label><input type="checkbox" id="export-names" checked> <span id="label-export-names">Noms des mini-jeux</span></label>
+              <label><input type="checkbox" id="export-times" checked> <span id="label-export-times">Meilleurs temps</span></label>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -444,11 +493,11 @@
 
         <div class="speed-filters" id="speed-filters">
           <strong id="label-desired" style="margin-bottom:4px;">Mini-jeux désirés (vitesses) :</strong>
-          <label><input type="checkbox" value="tres-lent" checked> <span data-i18n-speed="tres-lent">Très Lent</span> <span class="speed-count" data-speed-count="tres-lent" style="color:var(--muted);font-size:0.85em;"></span></label>
-          <label><input type="checkbox" value="lent" checked> <span data-i18n-speed="lent">Lent</span> <span class="speed-count" data-speed-count="lent" style="color:var(--muted);font-size:0.85em;"></span></label>
-          <label><input type="checkbox" value="moyen" checked> <span data-i18n-speed="moyen">Moyen</span> <span class="speed-count" data-speed-count="moyen" style="color:var(--muted);font-size:0.85em;"></span></label>
-          <label><input type="checkbox" value="rapide" checked> <span data-i18n-speed="rapide">Rapide</span> <span class="speed-count" data-speed-count="rapide" style="color:var(--muted);font-size:0.85em;"></span></label>
-          <label><input type="checkbox" value="tres-rapide" checked> <span data-i18n-speed="tres-rapide">Très Rapide</span> <span class="speed-count" data-speed-count="tres-rapide" style="color:var(--muted);font-size:0.85em;"></span></label>
+          <label><input type="checkbox" value="tres-lent" checked> <span data-i18n-speed="tres-lent">Très Lent</span> <span class="speed-count" data-speed-count="tres-lent" style="color:var(--muted);font-size:0.85em;"></span><span class="speed-next-pct" data-speed-pct="tres-lent"></span></label>
+          <label><input type="checkbox" value="lent" checked> <span data-i18n-speed="lent">Lent</span> <span class="speed-count" data-speed-count="lent" style="color:var(--muted);font-size:0.85em;"></span><span class="speed-next-pct" data-speed-pct="lent"></span></label>
+          <label><input type="checkbox" value="moyen" checked> <span data-i18n-speed="moyen">Moyen</span> <span class="speed-count" data-speed-count="moyen" style="color:var(--muted);font-size:0.85em;"></span><span class="speed-next-pct" data-speed-pct="moyen"></span></label>
+          <label><input type="checkbox" value="rapide" checked> <span data-i18n-speed="rapide">Rapide</span> <span class="speed-count" data-speed-count="rapide" style="color:var(--muted);font-size:0.85em;"></span><span class="speed-next-pct" data-speed-pct="rapide"></span></label>
+          <label><input type="checkbox" value="tres-rapide" checked> <span data-i18n-speed="tres-rapide">Très Rapide</span> <span class="speed-count" data-speed-count="tres-rapide" style="color:var(--muted);font-size:0.85em;"></span><span class="speed-next-pct" data-speed-pct="tres-rapide"></span></label>
         </div>
 
         <details class="help-box">
@@ -585,6 +634,8 @@
         sob: "Sum Of Best :",
         btnReset: "Réinitialiser l’ordre",
         btnExport: "Exporter la liste",
+        exportNames: "Noms des mini-jeux",
+        exportTimes: "Meilleurs temps",
         filterAll: "Tous",
         thType: "Type",
         thGame: "Mini-jeu",
@@ -637,6 +688,8 @@
         sob: "Sum Of Best:",
         btnReset: "Reset order",
         btnExport: "Export list",
+        exportNames: "Minigame names",
+        exportTimes: "Best times",
         filterAll: "All",
         thType: "Type",
         thGame: "Minigame",
@@ -694,6 +747,8 @@
         sob: "Sum Of Best:",
         btnReset: "Reihenfolge zurücksetzen",
         btnExport: "Liste exportieren",
+        exportNames: "Minispiel-Namen",
+        exportTimes: "Bestzeiten",
         filterAll: "Alle",
         thType: "Typ",
         thGame: "Minispiel",
@@ -746,6 +801,8 @@
         sob: "Sum Of Best:",
         btnReset: "Reiniciar el orden",
         btnExport: "Exportar la lista",
+        exportNames: "Nombres de minijuegos",
+        exportTimes: "Mejores tiempos",
         filterAll: "Todos",
         thType: "Tipo",
         thGame: "Minijuego",
@@ -847,6 +904,33 @@
         const rem = remaining[sp] || 0;
         const tot = totals[sp] || 0;
         el.textContent = tot === 0 ? "" : `(${rem}/${tot} ${leftWord})`;
+      });
+
+      // Proba qu'un mini-jeu de cette vitesse tombe au tour suivant (selon le type attendu)
+      const next = getNextType();
+      const nextBySpeed = { "tres-lent": 0, "lent": 0, "moyen": 0, "rapide": 0, "tres-rapide": 0 };
+      let nextPool = 0;
+      if (next) {
+        GAMES.forEach(g => {
+          if (g.type !== next || order.includes(g.name)) return;
+          nextPool++;
+          const sp = speeds[g.name];
+          if (sp && nextBySpeed.hasOwnProperty(sp)) nextBySpeed[sp]++;
+        });
+      }
+      document.querySelectorAll("[data-speed-pct]").forEach(el => {
+        const sp = el.dataset.speedPct;
+        if (!next || nextPool === 0) {
+          el.textContent = "";
+          return;
+        }
+        const n = nextBySpeed[sp] || 0;
+        if (n === 0) {
+          el.textContent = "";
+          return;
+        }
+        const pct = (n / nextPool) * 100;
+        el.textContent = " " + (pct % 1 === 0 ? pct.toFixed(0) : pct.toFixed(1)) + "%";
       });
     }
 
@@ -1033,6 +1117,10 @@
       document.getElementById("label-sob").textContent = t("sob");
       document.getElementById("btn-reset").textContent = t("btnReset");
       document.getElementById("btn-export").textContent = t("btnExport");
+      const expNames = document.getElementById("label-export-names");
+      const expTimes = document.getElementById("label-export-times");
+      if (expNames) expNames.textContent = t("exportNames");
+      if (expTimes) expTimes.textContent = t("exportTimes");
       document.getElementById("filter-all").textContent = t("filterAll");
       document.getElementById("th-type").textContent = t("thType");
       document.getElementById("th-game").textContent = t("thGame");
@@ -1189,14 +1277,22 @@
     }
 
     function exportOrder() {
+      const inclNames = document.getElementById("export-names")?.checked !== false;
+      const inclTimes = document.getElementById("export-times")?.checked !== false;
+      if (!inclNames && !inclTimes) return;
       const lines = order.map((n, i) => {
         const g = getGameByName(n);
         const label = g ? displayName(g) : n;
         const tm = bestTimes[n];
-        return `${i + 1}. ${label}${tm != null ? " — " + formatTime(tm) : ""}`;
+        const parts = [`${i + 1}.`];
+        if (inclNames) parts.push(label);
+        if (inclTimes) parts.push(tm != null ? formatTime(tm) : "—");
+        return parts.join(" ");
       });
-      const total = order.reduce((s, n) => s + (bestTimes[n] || 0), 0);
-      lines.push("", t("cumul") + " " + formatTime(total));
+      if (inclTimes) {
+        const total = order.reduce((s, n) => s + (bestTimes[n] || 0), 0);
+        lines.push("", t("cumul") + " " + formatTime(total));
+      }
       navigator.clipboard.writeText(lines.join("\n")).then(() => alert(t("exportOk")));
     }
 
@@ -1322,6 +1418,17 @@
       renderTracker();
     });
 
+    const exportMenuBtn = document.getElementById("btn-export-menu");
+    const exportMenu = document.getElementById("export-menu");
+    if (exportMenuBtn && exportMenu) {
+      exportMenuBtn.addEventListener("click", e => {
+        e.stopPropagation();
+        const open = exportMenu.classList.toggle("open");
+        exportMenuBtn.setAttribute("aria-expanded", open);
+      });
+      exportMenu.addEventListener("click", e => e.stopPropagation());
+    }
+
     document.querySelectorAll("#speed-filters input").forEach(cb => {
       cb.checked = desiredSpeeds.includes(cb.value);
       cb.addEventListener("change", () => {
@@ -1351,6 +1458,10 @@
     document.addEventListener("click", () => {
       langMenu.classList.remove("open");
       langBtn.setAttribute("aria-expanded", "false");
+      if (exportMenu) {
+        exportMenu.classList.remove("open");
+        if (exportMenuBtn) exportMenuBtn.setAttribute("aria-expanded", "false");
+      }
     });
 
     // Init
