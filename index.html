@@ -295,11 +295,15 @@
     }
     .export-menu label:hover { background: #1e293b; }
     .speed-next-pct {
-      color: var(--accent);
       font-weight: 600;
       font-size: 0.85em;
       margin-left: 2px;
     }
+    .speed-next-pct[data-speed-pct="tres-lent"]   { color: #e88a8a; }
+    .speed-next-pct[data-speed-pct="lent"]        { color: #e8b48a; }
+    .speed-next-pct[data-speed-pct="moyen"]       { color: #e8d88a; }
+    .speed-next-pct[data-speed-pct="rapide"]      { color: #8ae8a8; }
+    .speed-next-pct[data-speed-pct="tres-rapide"] { color: #5cf0a0; }
 
     /* Probabilité */
     #proba-section {
